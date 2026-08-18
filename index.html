@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Secret Frame</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#020a13;
+color:#fff;
+}
+button,input{font:inherit}
+button{cursor:pointer;border:0}
+
+.login{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:
+radial-gradient(circle at 20% 20%,#063c5a,transparent 35%),
+radial-gradient(circle at 80% 80%,#14234e,transparent 35%),
+#020810;
+}
+
+.loginBox{
+width:min(420px,100%);
+padding:30px;
+background:#071522;
+border:1px solid #087fc0;
+border-radius:25px;
+box-shadow:0 0 35px #008cff22;
+}
+
+.logo{
+width:90px;
+height:90px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:34px;
+font-weight:900;
+font-style:italic;
+border:4px solid #00cfff;
+background:#07182d;
+box-shadow:0 0 25px #008cff;
+margin-bottom:20px;
+}
+
+h1{margin:0 0 7px}
+h1 span{color:#00eaff}
+
+.sub{color:#91a8bd;margin-bottom:22px}
+
+label{
+display:block;
+margin:12px 0 6px;
+color:#c9d9e5;
+}
+
+input{
+width:100%;
+padding:14px;
+background:#06121d;
+color:#fff;
+border:1px solid #29475c;
+border-radius:11px;
+outline:none;
+}
+
+.loginBtn{
+width:100%;
+padding:14px;
+margin-top:16px;
+border-radius:11px;
+background:linear-gradient(90deg,#00aaff,#00d9b1);
+color:#fff;
+font-weight:bold;
+}
+
+.error{
+color:#ff6b7b;
+margin-top:10px;
+}
+
+#app{
+display:none;
+height:100vh;
+}
+
+.layout{
+height:100%;
+display:grid;
+grid-template-columns:250px 280px 1fr;
+}
+
+/* LEFT */
+
+.left{
+background:#061321;
+border-right:1px solid #0879bd;
+padding:14px;
+display:flex;
+flex-direction:column;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:10px;
+padding-bottom:18px;
+border-bottom:1px solid #103c57;
+}
+
+.smallLogo{
+width:58px;
+height:58px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+font-weight:900;
+font-style:italic;
+border:3px solid #00cfff;
+background:#07182d;
+box-shadow:0 0 18px #008cff;
+}
+
+.brandText{
+font-size:20px;
+font-weight:bold;
+}
+
+.brandText span{color:#00eaff}
+
+.menu{
+flex:1;
+padding-top:18px;
+}
+
+.menu button{
+width:100%;
+padding:14px;
+margin-bottom:8px;
+border-radius:11px;
+background:#091e31;
+border:1px solid #14567b;
+color:white;
+text-align:left;
+}
+
+.menu button:hover{
+border-color:#00eaff;
+}
+
+.logout{
+background:#2a1119!important;
+border-color:#743044!important;
+}
+
+/* MEMBERS */
+
+.members{
+background:#03101d;
+border-right:1px solid #0879bd;
+overflow:auto;
+}
+
+.memberHead{
+padding:18px;
+border-bottom:1px solid #103c57;
+}
+
+.member{
+display:flex;
+align-items:center;
+gap:11px;
+padding:15px;
+border-bottom:1px solid #0b2940;
+}
+
+.avatar{
+width:48px;
+height:48px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#0b2340;
+border:2px solid #139dff;
+font-weight:bold;
+}
+
+.owner{
+border-color:#ffd000;
+}
+
+.dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#00f58c;
+display:inline-block;
+margin-right:5px;
+}
+
+/* CHAT */
+
+.chatArea{
+display:flex;
+flex-direction:column;
+min-width:0;
+background:#020b13;
+}
+
+.header{
+height:75px;
+padding:10px 18px;
+background:#061525;
+border-bottom:1px solid #0879bd;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.title{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.titleName{
+font-size:19px;
+font-weight:bold;
+}
+
+.titleSub{
+font-size:11px;
+color:#8da5b9;
+}
+
+.actions{
+display:flex;
+gap:7px;
+}
+
+.icon{
+width:43px;
+height:43px;
+border-radius:11px;
+background:#09243b;
+border:1px solid #14658e;
+color:white;
+font-size:18px;
+}
+
+.chat{
+flex:1;
+overflow:auto;
+padding:18px;
+background:
+radial-gradient(circle at 20% 20%,#08223855,transparent 35%),
+#020b13;
+}
+
+.day{
+text-align:center;
+margin-bottom:18px;
+}
+
+.day span{
+font-size:11px;
+padding:6px 13px;
+border-radius:20px;
+background:#0b2438;
+color:#9db5c8;
+}
+
+.message{
+display:flex;
+gap:8px;
+margin:12px 0;
+}
+
+.message.mine{
+justify-content:flex-end;
+}
+
+.bubble{
+max-width:75%;
+padding:11px 13px;
+border-radius:14px;
+background:#101f31;
+border:1px solid #1b3b56;
+word-break:break-word;
+}
+
+.mine .bubble{
+background:#005b4d;
+border-color:#00a98a;
+}
+
+.sender{
+font-size:11px;
+font-weight:bold;
+color:#13baff;
+margin-bottom:5px;
+}
+
+.time{
+font-size:9px;
+color:#91a6b8;
+text-align:right;
+margin-top:6px;
+}
+
+.media{
+max-width:280px;
+max-height:300px;
+border-radius:10px;
+margin-top:5px;
+}
+
+.composer{
+display:flex;
+gap:7px;
+padding:11px;
+background:#061525;
+border-top:1px solid #0879bd;
+}
+
+.composer input{
+flex:1;
+border-radius:25px;
+}
+
+.send{
+width:48px;
+height:48px;
+border-radius:50%;
+background:linear-gradient(135deg,#00e899,#00a9ef);
+color:white;
+font-size:18px;
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:#000b;
+z-index:50;
+align-items:center;
+justify-content:center;
+padding:15px;
+}
+
+.modal.show{
+display:flex;
+}
+
+.modalBox{
+width:min(620px,100%);
+max-height:90vh;
+overflow:auto;
+background:#071522;
+border:1px solid #00a9e8;
+border-radius:18px;
+padding:20px;
+}
+
+.modalHead{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+}
+
+.close{
+width:40px;
+height:40px;
+border-radius:10px;
+background:#1b2b38;
+color:white;
+}
+
+.adminRow{
+background:#0b2033;
+border:1px solid #174563;
+padding:13px;
+border-radius:10px;
+margin:7px 0;
+}
+
+.videoGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+}
+
+video{
+width:100%;
+background:#000;
+border-radius:10px;
+}
+
+@media(max-width:950px){
+.layout{
+grid-template-columns:75px 220px 1fr;
+}
+.brandText{
+display:none;
+}
+.left{
+padding:7px;
+}
+.menu button{
+text-align:center;
+font-size:20px;
+}
+.menu button span{
+display:none;
+}
+}
+
+@media(max-width:650px){
+.layout{
+grid-template-columns:62px 0 1fr;
+}
+.members{
+display:none;
+}
+.bubble{
+max-width:88%;
+}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="login" class="login">
+
+<div class="loginBox">
+
+<div class="logo">SF</div>
+
+<h1>Secret <span>Frame</span></h1>
+
+<div class="sub">
+🔒 Private Group • 4 Members
+</div>
+
+<label>Mobile Number / Admin ID</label>
+
+<input
+id="loginId"
+placeholder="Enter number"
+>
+
+<label>Password</label>
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+>
+
+<button
+class="loginBtn"
+id="loginButton"
+>
+Login
+</button>
+
+<div id="error" class="error"></div>
+
+</div>
+</div>
+
+
+<!-- APP -->
+
+<div id="app">
+
+<div class="layout">
+
+<!-- LEFT -->
+
+<aside class="left">
+
+<div class="brand">
+
+<div class="smallLogo">SF</div>
+
+<div class="brandText">
+Secret <span>Frame</span>
+</div>
+
+</div>
+
+<div class="menu">
+
+<button id="chatBtn">
+💬 <span>Chat</span>
+</button>
+
+<button id="membersBtn">
+👥 <span>Members</span>
+</button>
+
+<button id="mediaBtn">
+🖼️ <span>Media</span>
+</button>
+
+<button id="voiceBtn">
+📞 <span>Voice Call</span>
+</button>
+
+<button id="videoBtn">
+📹 <span>Video Call</span>
+</button>
+
+<button id="adminBtn">
+👑 <span>Admin</span>
+</button>
+
+</div>
+
+<button
+class="menu logout"
+id="logoutBtn"
+>
+🚪 <span>Logout</span>
+</button>
+
+</aside>
+
+
+<!-- MEMBERS -->
+
+<aside class="members">
+
+<div class="memberHead">
+
+<b>Members (4)</b>
+
+<div style="font-size:11px;color:#00f58c;margin-top:5px">
+● Private Group
+</div>
+
+</div>
+
+
+<div class="member">
+
+<div class="avatar owner">👑</div>
+
+<div>
+<b>Owner</b>
+<div style="font-size:11px;color:#91a8bd">
+Admin
+</div>
+</div>
+
+</div>
+
+
+<div class="member">
+
+<div class="avatar">F1</div>
+
+<div>
+<b>Friend 1</b>
+<div style="font-size:11px;color:#91a8bd">
+<span class="dot"></span>
+7209000233
+</div>
+</div>
+
+</div>
+
+
+<div class="member">
+
+<div class="avatar">F2</div>
+
+<div>
+<b>Friend 2</b>
+<div style="font-size:11px;color:#91a8bd">
+<span class="dot"></span>
++917337753903
+</div>
+</div>
+
+</div>
+
+
+<div class="member">
+
+<div class="avatar">F3</div>
+
+<div>
+<b>Friend 3</b>
+<div style="font-size:11px;color:#91a8bd">
+<span class="dot"></span>
++919771094346
+</div>
+</div>
+
+</div>
+
+</aside>
+
+
+<!-- CHAT -->
+
+<main class="chatArea">
+
+<header class="header">
+
+<div class="title">
+
+<div class="avatar">
+SF
+</div>
+
+<div>
+
+<div class="titleName">
+Secret Frame
+</div>
+
+<div class="titleSub">
+🔒 Real-time private group
+</div>
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="icon"
+id="voiceTop"
+>
+📞
+</button>
+
+<button
+class="icon"
+id="videoTop"
+>
+📹
+</button>
+
+</div>
+
+</header>
+
+
+<div id="chat" class="chat">
+
+<div class="day">
+<span>Secret Frame</span>
+</div>
+
+</div>
+
+
+<footer class="composer">
+
+<button
+class="icon"
+id="emojiBtn"
+>
+😊
+</button>
+
+<input
+id="message"
+placeholder="Type a message..."
+>
+
+<button
+class="icon"
+id="mediaBtn2"
+>
+📎
+</button>
+
+<button
+class="send"
+id="sendBtn"
+>
+➤
+</button>
+
+</footer>
+
+</main>
+
+</div>
+</div>
+
+
+<!-- MEDIA INPUT -->
+
+<input
+id="mediaInput"
+type="file"
+accept="image/*,video/*"
+style="display:none"
+>
+
+
+<!-- MODAL -->
+
+<div id="modal" class="modal">
+
+<div class="modalBox">
+
+<div class="modalHead">
+
+<h3 id="modalTitle">
+Secret Frame
+</h3>
+
+<button
+class="close"
+id="closeModal"
+>
+✕
+</button>
+
+</div>
+
+<div id="modalContent"></div>
+
+</div>
+</div>
+
+
+<!-- FIREBASE -->
+
+<script type="module">
+
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+import {
+getDatabase,
+ref,
+push,
+onValue,
+set,
+remove,
+serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+
+/* ==================================================
+   FIREBASE CONFIG
+   Your database URL is already included.
+   ================================================== */
+
+const firebaseConfig={
+
+projectId:"secret-frame-698ba",
+
+databaseURL:
+"https://secret-frame-698ba-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+};
+
+
+/* INITIALIZE */
+
+const firebaseApp=
+initializeApp(firebaseConfig);
+
+const db=
+getDatabase(firebaseApp);
+
+
+/* ==================================================
+   SECRET FRAME MEMBERS
+   ================================================== */
+
+const ADMIN={
+id:"ADMIN",
+password:"admin123",
+name:"Owner / Admin"
+};
+
+const MEMBERS={
+
+"7209000233":{
+name:"Friend 1",
+password:"1111"
+},
+
+"+917337753903":{
+name:"Friend 2",
+password:"2222"
+},
+
+"+919771094346":{
+name:"Friend 3",
+password:"3333"
+}
+
+};
+
+
+let currentUser=null;
+
+let messagesRef=null;
+
+
+/* ==================================================
+   ELEMENTS
+   ================================================== */
+
+const loginPage=
+document.getElementById("login");
+
+const appPage=
+document.getElementById("app");
+
+const errorBox=
+document.getElementById("error");
+
+const chat=
+document.getElementById("chat");
+
+const messageInput=
+document.getElementById("message");
+
+
+/* ==================================================
+   LOGIN
+   ================================================== */
+
+document
+.getElementById("loginButton")
+.addEventListener(
+"click",
+login
+);
+
+document
+.getElementById("loginPassword")
+.addEventListener(
+"keydown",
+e=>{
+if(e.key==="Enter")login();
+}
+);
+
+
+function login(){
+
+const id=
+document
+.getElementById("loginId")
+.value
+.trim();
+
+const password=
+document
+.getElementById("loginPassword")
+.value;
+
+
+if(
+id===ADMIN.id &&
+password===ADMIN.password
+){
+
+currentUser="ADMIN";
+
+openApp();
+
+return;
+
+}
+
+
+if(
+!MEMBERS[id] ||
+MEMBERS[id].password!==password
+){
+
+errorBox.textContent=
+"Mobile number या password गलत है.";
+
+return;
+
+}
+
+
+currentUser=id;
+
+openApp();
+
+}
+
+
+/* ==================================================
+   OPEN APP
+   ================================================== */
+
+function openApp(){
+
+loginPage.style.display="none";
+
+appPage.style.display="block";
+
+
+if(currentUser!=="ADMIN"){
+
+document
+.getElementById("adminBtn")
+.style.display="none";
+
+}
+
+
+startRealtimeChat();
+
+}
+
+
+/* ==================================================
+   REALTIME CHAT
+   ================================================== */
+
+function startRealtimeChat(){
+
+messagesRef=
+ref(db,"secretFrame/messages");
+
+
+onValue(
+messagesRef,
+snapshot=>{
+
+const data=
+snapshot.val() || {};
+
+const list=
+Object.entries(data)
+.map(
+([id,value])=>({
+id,
+...value
+})
+)
+.sort(
+(a,b)=>
+(a.createdAt||0)-
+(b.createdAt||0)
+);
+
+renderMessages(list);
+
+},
+error=>{
+
+console.error(error);
+
+chat.innerHTML=`
+
+<div style="
+padding:20px;
+color:#ff6978;
+">
+
+Firebase connection error:<br>
+
+${escapeHTML(error.message)}
+
+</div>
+
+`;
+
+}
+
+);
+
+}
+
+
+/* ==================================================
+   SEND MESSAGE
+   ================================================== */
+
+document
+.getElementById("sendBtn")
+.addEventListener(
+"click",
+sendMessage
+);
+
+messageInput
+.addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Enter"){
+sendMessage();
+}
+
+}
+);
+
+
+async function sendMessage(){
+
+const text=
+messageInput
+.value
+.trim();
+
+if(!text)return;
+
+const name=
+currentUser==="ADMIN"
+?ADMIN.name
+:MEMBERS[currentUser].name;
+
+
+try{
+
+await push(
+messagesRef,
+{
+
+type:"text",
+
+uid:currentUser,
+
+name:name,
+
+text:text,
+
+createdAt:Date.now()
+
+}
+);
+
+messageInput.value="";
+
+}
+catch(error){
+
+alert(
+"Message send नहीं हुआ: "+
+error.message
+);
+
+}
+
+}
+
+
+/* ==================================================
+   RENDER MESSAGES
+   ================================================== */
+
+function renderMessages(list){
+
+chat.innerHTML=`
+
+<div class="day">
+<span>Secret Frame • Live Chat</span>
+</div>
+
+`;
+
+
+if(list.length===0){
+
+chat.innerHTML+=`
+
+<div class="message">
+
+<div class="avatar">
+SF
+</div>
+
+<div class="bubble">
+
+<div class="sender">
+Secret Frame
+</div>
+
+Welcome! पहला message भेजो. 🔥
+
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+list.forEach(m=>{
+
+const wrapper=
+document.createElement("div");
+
+wrapper.className=
+"message "+
+(
+m.uid===currentUser
+?"mine"
+:""
+);
+
+
+const avatar=
+m.uid===currentUser
+?""
+:`
+<div class="avatar">
+${initials(m.name)}
+</div>
+`;
+
+
+let content="";
+
+
+if(m.type==="text"){
+
+content=
+escapeHTML(m.text);
+
+}
+
+
+if(m.type==="image"){
+
+content=`
+
+<img
+class="media"
+src="${m.data}"
+alt="Shared image"
+>
+
+`;
+
+}
+
+
+if(m.type==="video"){
+
+content=`
+
+<video
+class="media"
+src="${m.data}"
+controls>
+</video>
+
+`;
+
+}
+
+
+wrapper.innerHTML=`
+
+${avatar}
+
+<div class="bubble">
+
+<div class="sender">
+${escapeHTML(m.name)}
+${m.uid==="ADMIN"?" 👑":""}
+</div>
+
+${content}
+
+<div class="time">
+${formatTime(m.createdAt)}
+</div>
+
+</div>
+
+`;
+
+chat.appendChild(wrapper);
+
+});
+
+
+chat.scrollTop=
+chat.scrollHeight;
+
+}
+
+
+/* ==================================================
+   MEDIA
+   ================================================== */
+
+document
+.getElementById("mediaBtn2")
+.addEventListener(
+"click",
+()=>{
+document
+.getElementById("mediaInput")
+.click();
+}
+);
+
+
+document
+.getElementById("mediaInput")
+.addEventListener(
+"change",
+sendMedia
+);
+
+
+async function sendMedia(event){
+
+const file=
+event.target.files[0];
+
+if(!file)return;
+
+
+if(file.size>5*1024*1024){
+
+alert(
+"अभी testing के लिए 5MB से छोटी photo/video चुनो."
+);
+
+event.target.value="";
+
+return;
+
+}
+
+
+const reader=
+new FileReader();
+
+
+reader.onload=async()=>{
+
+const name=
+currentUser==="ADMIN"
+?ADMIN.name
+:MEMBERS[currentUser].name;
+
+
+try{
+
+await push(
+messagesRef,
+{
+
+type:
+file.type.startsWith("image/")
+?"image"
+:"video",
+
+uid:currentUser,
+
+name:name,
+
+data:reader.result,
+
+createdAt:Date.now()
+
+}
+);
+
+}
+catch(error){
+
+alert(
+"Media send नहीं हुआ: "+
+error.message
+);
+
+}
+
+};
+
+
+reader.readAsDataURL(file);
+
+event.target.value="";
+
+}
+
+
+/* ==================================================
+   ADMIN
+   ================================================== */
+
+document
+.getElementById("adminBtn")
+.addEventListener(
+"click",
+openAdmin
+);
+
+
+function openAdmin(){
+
+if(currentUser!=="ADMIN"){
+
+alert("Admin only.");
+
+return;
+
+}
+
+
+document
+.getElementById("modalTitle")
+.textContent=
+"Secret Frame Admin 👑";
+
+
+let html=`
+
+<p style="color:#91a8bd">
+Member management
+</p>
+
+<div class="adminRow">
+<b>Owner / Admin</b>
+<br>
+<small>ADMIN</small>
+<br>
+<span style="color:#00f58c">
+● Full Control
+</span>
+</div>
+`;
+
+
+Object.entries(MEMBERS)
+.forEach(
+([id,m])=>{
+
+html+=`
+
+<div class="adminRow">
+
+<b>${escapeHTML(m.name)}</b>
+
+<br>
+
+<small>${escapeHTML(id)}</small>
+
+<br><br>
+
+<span style="color:#00f58c">
+● Active
+</span>
+
+<button
+data-member="${escapeHTML(id)}"
+style="
+float:right;
+padding:7px 10px;
+border-radius:7px;
+background:#d6384c;
+color:#fff;
+border:0;
+">
+
+Remove
+
+</button>
+
+</div>
+
+`;
+
+}
+);
+
+
+document
+.getElementById("modalContent")
+.innerHTML=html;
+
+
+document
+.getElementById("modal")
+.classList
+.add("show");
+
+}
+
+
+/* ==================================================
+   MEMBERS
+   ================================================== */
+
+document
+.getElementById("membersBtn")
+.addEventListener(
+"click",
+()=>{
+
+document
+.getElementById("modalTitle")
+.textContent=
+"Secret Frame Members";
+
+
+document
+.getElementById("modalContent")
+.innerHTML=`
+
+<p>👑 Owner / Admin</p>
+
+<p>🟢 7209000233</p>
+
+<p>🟢 +917337753903</p>
+
+<p>🟢 +919771094346</p>
+
+`;
+
+document
+.getElementById("modal")
+.classList
+.add("show");
+
+}
+);
+
+
+/* ==================================================
+   VOICE CALL
+   ================================================== */
+
+document
+.getElementById("voiceBtn")
+.addEventListener(
+"click",
+startVoice
+);
+
+document
+.getElementById("voiceTop")
+.addEventListener(
+"click",
+startVoice
+);
+
+
+async function startVoice(){
+
+document
+.getElementById("modalTitle")
+.textContent=
+"Secret Frame • Voice Call";
+
+
+document
+.getElementById("modalContent")
+.innerHTML=`
+
+<p>
+🎙️ Microphone permission required.
+</p>
+
+<button
+id="startMic"
+class="loginBtn">
+
+Start Microphone
+
+</button>
+
+<br><br>
+
+<button
+id="endCall"
+style="
+padding:12px;
+border:0;
+border-radius:10px;
+background:#d6384c;
+color:white;
+">
+
+End Call
+
+</button>
+
+`;
+
+
+document
+.getElementById("modal")
+.classList
+.add("show");
+
+
+document
+.getElementById("startMic")
+.addEventListener(
+"click",
+async()=>{
+
+try{
+
+window.callStream=
+await navigator
+.mediaDevices
+.getUserMedia({
+audio:true
+});
+
+alert(
+"Microphone चालू है."
+);
+
+}
+catch(error){
+
+alert(
+"Microphone permission नहीं मिली."
+);
+
+}
+
+}
+);
+
+
+document
+.getElementById("endCall")
+.addEventListener(
+"click",
+stopCall
+);
+
+}
+
+
+/* ==================================================
+   VIDEO CALL
+   ================================================== */
+
+document
+.getElementById("videoBtn")
+.addEventListener(
+"click",
+startVideo
+);
+
+document
+.getElementById("videoTop")
+.addEventListener(
+"click",
+startVideo
+);
+
+
+async function startVideo(){
+
+document
+.getElementById("modalTitle")
+.textContent=
+"Secret Frame • Video Call";
+
+
+document
+.getElementById("modalContent")
+.innerHTML=`
+
+<div class="videoGrid">
+
+<div>
+
+<p>You</p>
+
+<video
+id="localVideo"
+autoplay
+muted
+playsinline>
+</video>
+
+</div>
+
+<div>
+
+<p>Friend</p>
+
+<video
+id="remoteVideo"
+autoplay
+playsinline>
+</video>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+id="micBtn"
+class="icon">
+
+🎙️ Mic
+
+</button>
+
+<button
+id="cameraBtn"
+class="icon">
+
+📷 Camera
+
+</button>
+
+<button
+id="stopVideo"
+style="
+padding:10px;
+border:0;
+border-radius:8px;
+background:#d6384c;
+color:white">
+
+End Call
+
+</button>
+
+<p style="
+color:#91a8bd;
+font-size:12px;
+margin-top:12px">
+
+Camera preview is ready.
+Real multi-device WebRTC signaling will be added
+after the realtime chat test works.
+
+</p>
+
+`;
+
+
+document
+.getElementById("modal")
+.classList
+.add("show");
+
+
+try{
+
+window.callStream=
+await navigator
+.mediaDevices
+.getUserMedia({
+
+video:true,
+
+audio:true
+
+});
+
+
+document
+.getElementById("localVideo")
+.srcObject=
+window.callStream;
+
+
+}
+catch(error){
+
+alert(
+"Camera/Microphone permission नहीं मिली."
+);
+
+}
+
+
+document
+.getElementById("micBtn")
+.addEventListener(
+"click",
+toggleMic
+);
+
+document
+.getElementById("cameraBtn")
+.addEventListener(
+"click",
+toggleCamera
+);
+
+document
+.getElementById("stopVideo")
+.addEventListener(
+"click",
+stopCall
+);
+
+}
+
+
+/* ==================================================
+   MIC / CAMERA
+   ================================================== */
+
+function toggleMic(){
+
+if(!window.callStream)return;
+
+const track=
+window.callStream
+.getAudioTracks()[0];
+
+if(track){
+
+track.enabled=
+!track.enabled;
+
+}
+
+}
+
+
+function toggleCamera(){
+
+if(!window.callStream)return;
+
+const track=
+window.callStream
+.getVideoTracks()[0];
+
+if(track){
+
+track.enabled=
+!track.enabled;
+
+}
+
+}
+
+
+function stopCall(){
+
+if(window.callStream){
+
+window.callStream
+.getTracks()
+.forEach(
+track=>track.stop()
+);
+
+}
+
+window.callStream=null;
+
+closeModal();
+
+}
+
+
+/* ==================================================
+   MEDIA PAGE
+   ================================================== */
+
+document
+.getElementById("mediaBtn")
+.addEventListener(
+"click",
+()=>{
+
+document
+.getElementById("modalTitle")
+.textContent=
+"Secret Frame • Media";
+
+
+document
+.getElementById("modalContent")
+.innerHTML=`
+
+<p style="color:#91a8bd">
+Photo या video चुनकर group में भेज सकते हो।
+</p>
+
+<button
+id="selectMedia"
+class="loginBtn">
+
+🖼️ Select Photo / Video
+
+</button>
+
+`;
+
+
+document
+.getElementById("modal")
+.classList
+.add("show");
+
+
+document
+.getElementById("selectMedia")
+.addEventListener(
+"click",
+()=>{
+
+closeModal();
+
+document
+.getElementById("mediaInput")
+.click();
+
+}
+);
+
+}
+);
+
+
+/* ==================================================
+   EMOJI
+   ================================================== */
+
+document
+.getElementById("emojiBtn")
+.addEventListener(
+"click",
+()=>{
+
+messageInput.value+=" 😊";
+
+messageInput.focus();
+
+}
+);
+
+
+/* ==================================================
+   CLOSE MODAL
+   ================================================== */
+
+document
+.getElementById("closeModal")
+.addEventListener(
+"click",
+closeModal
+);
+
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList
+.remove("show");
+
+}
+
+
+/* ==================================================
+   LOGOUT
+   ================================================== */
+
+document
+.getElementById("logoutBtn")
+.addEventListener(
+"click",
+()=>{
+
+location.reload();
+
+}
+);
+
+
+/* ==================================================
+   HELPERS
+   ================================================== */
+
+function initials(name){
+
+return String(name||"SF")
+.split(" ")
+.map(x=>x[0])
+.join("")
+.substring(0,2)
+.toUpperCase();
+
+}
+
+
+function formatTime(time){
+
+if(!time)return"";
+
+return new Date(time)
+.toLocaleTimeString(
+[],
+{
+hour:"2-digit",
+minute:"2-digit"
+}
+);
+
+}
+
+
+function escapeHTML(value){
+
+const div=
+document.createElement("div");
+
+div.textContent=
+String(value??"");
+
+return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>
