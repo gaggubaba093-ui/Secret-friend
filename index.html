@@ -1,519 +1,973 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Secret Frame</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#06121b;
-  color:#eef7ff;
+ margin:0;
+ width:100%;
+ height:100%;
+ overflow:hidden;
+ font-family:Arial,Helvetica,sans-serif;
+ background:#06121b;
+ color:#fff;
 }
 
-.app{
-  height:100dvh;
-  display:flex;
-  background:#06121b;
+button,input{font:inherit}
+button{cursor:pointer}
+
+:root{
+ --bg:#06121b;
+ --panel:#081923;
+ --panel2:#0b2230;
+ --line:#087bb8;
+ --blue:#08c8ff;
+ --green:#00d39d;
+ --text:#fff;
+ --muted:#91aabd;
 }
 
-/* LEFT SIDEBAR */
-.side{
-  width:110px;
-  flex:none;
-  background:#091923;
-  border-right:1px solid #0876b7;
-  padding:12px 10px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  align-items:center;
+/* ================= LOGIN ================= */
+
+#loginScreen{
+ width:100%;
+ height:100dvh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ padding:20px;
+ background:
+ radial-gradient(circle at 20% 20%,#003b5b 0,transparent 35%),
+ radial-gradient(circle at 80% 80%,#10285b 0,transparent 40%),
+ #020b12;
 }
 
-.logo{
-  width:74px;
-  height:74px;
-  border:4px solid #08c8ff;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:28px;
-  font-weight:bold;
-  font-style:italic;
-  box-shadow:0 0 22px #00bfff;
+.loginBox{
+ width:min(430px,100%);
+ padding:30px 24px;
+ border:1px solid var(--blue);
+ border-radius:28px;
+ background:#071824ee;
+ box-shadow:0 0 40px #008cff44;
 }
 
-.nav{
-  width:84px;
-  height:72px;
-  border:1px solid #12618e;
-  border-radius:15px;
-  background:#0a2030;
-  color:#fff;
-  font-size:30px;
-  cursor:pointer;
+.sfLogo{
+ width:105px;
+ height:105px;
+ margin:0 auto 18px;
+ border:5px solid var(--blue);
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ font-size:42px;
+ font-weight:900;
+ font-style:italic;
+ box-shadow:0 0 30px #00bfff;
 }
 
-.grow{
-  flex:1;
+.loginTitle{
+ text-align:center;
+ font-size:35px;
+ margin:0;
 }
 
-.logout{
-  background:#30121a;
+.loginTitle span{color:#00d7ff}
+
+.loginSub{
+ text-align:center;
+ color:var(--muted);
+ margin:8px 0 25px;
 }
 
-/* MEMBERS */
-.members{
-  width:300px;
-  flex:none;
-  background:#071722;
-  border-right:1px solid #0876b7;
+.loginInput{
+ width:100%;
+ height:55px;
+ border:1px solid #1c5575;
+ border-radius:15px;
+ background:#06131d;
+ color:white;
+ outline:none;
+ padding:0 16px;
+ margin-bottom:12px;
 }
 
-.mh{
-  padding:22px 18px;
-  border-bottom:1px solid #124d70;
-  font-size:21px;
-  font-weight:bold;
+.loginButton{
+ width:100%;
+ height:55px;
+ border:0;
+ border-radius:15px;
+ color:#fff;
+ font-weight:bold;
+ background:linear-gradient(135deg,#08bfff,#00d19d);
 }
 
-.member{
-  display:flex;
-  gap:13px;
-  align-items:center;
-  padding:15px;
-  border-bottom:1px solid #12364a;
+.loginError{
+ color:#ff7180;
+ text-align:center;
+ min-height:22px;
+ margin-top:12px;
 }
 
-.av{
-  width:56px;
-  height:56px;
-  flex:none;
-  border:2px solid #08c8ff;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-weight:bold;
+/* ================= MAIN ================= */
+
+#app{
+ width:100%;
+ height:100dvh;
+ display:none;
 }
 
-.info{
-  min-width:0;
+.mobileApp{
+ width:100%;
+ height:100%;
+ display:flex;
+ background:var(--bg);
 }
 
-.name{
-  font-weight:bold;
+/* ================= CHAT LIST ================= */
+
+.chatList{
+ width:100%;
+ height:100%;
+ background:var(--panel);
+ display:flex;
+ flex-direction:column;
 }
 
-.id{
-  color:#91aabd;
-  font-size:14px;
-  margin-top:5px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+.topBar{
+ height:82px;
+ flex:none;
+ display:flex;
+ align-items:center;
+ padding:10px 14px;
+ border-bottom:1px solid #104965;
+ background:#071923;
 }
 
-.dot{
-  display:inline-block;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#00e85a;
-  box-shadow:0 0 8px #00e85a;
+.topLogo{
+ width:52px;
+ height:52px;
+ border:3px solid var(--blue);
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ font-weight:900;
+ font-size:21px;
+ font-style:italic;
+ box-shadow:0 0 18px #00bfff;
 }
 
-/* CHAT */
-.chat{
-  flex:1;
-  min-width:0;
-  display:flex;
-  flex-direction:column;
+.topTitle{
+ flex:1;
+ padding-left:12px;
 }
 
-.top{
-  height:94px;
-  flex:none;
-  background:#081a27;
-  border-bottom:1px solid #0876b7;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 16px;
+.topTitle b{
+ display:block;
+ font-size:21px;
 }
 
-.menu{
-  display:none;
-  width:44px;
-  height:44px;
-  background:#0b2637;
-  color:#fff;
-  border:1px solid #12618e;
-  border-radius:12px;
-  font-size:24px;
+.topTitle span{
+ color:var(--muted);
+ font-size:12px;
 }
 
-.cav{
-  width:56px;
-  height:56px;
-  border:2px solid #08c8ff;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-weight:bold;
-  flex:none;
+.topMenu{
+ width:45px;
+ height:45px;
+ border:1px solid #165979;
+ border-radius:12px;
+ background:#0b2637;
+ color:white;
+ font-size:22px;
 }
 
-.title{
-  flex:1;
-  min-width:0;
+.search{
+ padding:10px;
+ border-bottom:1px solid #0d3449;
 }
 
-.title b{
-  display:block;
-  font-size:22px;
+.search input{
+ width:100%;
+ height:46px;
+ border:1px solid #174c6c;
+ border-radius:24px;
+ background:#06131d;
+ color:#fff;
+ outline:none;
+ padding:0 17px;
 }
 
-.title span{
-  display:block;
-  color:#91aabd;
-  margin-top:4px;
+.chatItems{
+ flex:1;
+ overflow:auto;
 }
 
-.actions{
-  display:flex;
-  gap:9px;
+.chatItem{
+ height:82px;
+ padding:10px 13px;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ border-bottom:1px solid #0e3347;
+ cursor:pointer;
 }
 
-.act{
-  width:58px;
-  height:58px;
-  border:1px solid #12618e;
-  border-radius:14px;
-  background:#0b2637;
-  color:#fff;
-  font-size:25px;
-  cursor:pointer;
+.chatItem:active{background:#0d2a3b}
+
+.chatAvatar{
+ width:58px;
+ height:58px;
+ flex:none;
+ border:2px solid #168cd0;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ background:#0c2535;
+ font-weight:bold;
+ font-size:19px;
 }
 
-.video{
-  background:#00bfa0;
+.chatInfo{
+ flex:1;
+ min-width:0;
 }
 
-/* MESSAGES */
-.msgs{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  padding:18px 22px;
-  background:#06121b;
-  display:flex;
-  flex-direction:column;
-  gap:11px;
+.chatNameRow{
+ display:flex;
+ justify-content:space-between;
+ gap:8px;
 }
 
-.bubble{
-  max-width:72%;
-  padding:11px 15px;
-  border-radius:17px;
-  background:#162b40;
+.chatName{
+ font-weight:bold;
+ font-size:16px;
 }
 
-.mine{
-  align-self:flex-end;
-  background:#007b69;
+.chatTime{
+ color:#718d9d;
+ font-size:10px;
+ white-space:nowrap;
 }
 
-.sender{
-  font-size:13px;
-  color:#72d4ff;
-  margin-bottom:5px;
+.lastMessage{
+ margin-top:7px;
+ color:#8ca6b5;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ font-size:13px;
 }
 
-.mine .sender{
-  color:#b7fff0;
+.unread{
+ min-width:21px;
+ height:21px;
+ padding:0 6px;
+ display:grid;
+ place-items:center;
+ border-radius:50%;
+ background:#00cf91;
+ color:#001a12;
+ font-size:11px;
+ font-weight:bold;
 }
 
-.text{
-  font-size:17px;
-  word-break:break-word;
+/* ================= INDIVIDUAL CHAT ================= */
+
+.chatScreen{
+ position:absolute;
+ inset:0;
+ background:var(--bg);
+ display:none;
+ flex-direction:column;
 }
 
-.time{
-  font-size:11px;
-  color:#9fb1bd;
-  text-align:right;
-  margin-top:4px;
+.chatHeader{
+ height:82px;
+ flex:none;
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:8px 10px;
+ background:#071923;
+ border-bottom:1px solid var(--line);
 }
 
-.empty{
-  margin:auto;
-  text-align:center;
-  color:#8196a5;
+.backButton{
+ width:43px;
+ height:43px;
+ border:0;
+ background:transparent;
+ color:white;
+ font-size:27px;
 }
 
-/* MESSAGE BOX */
-.compose{
-  height:76px;
-  flex:none;
-  background:#081a27;
-  border-top:1px solid #124d70;
-  padding:10px;
-  display:flex;
-  gap:9px;
+.friendAvatar{
+ width:50px;
+ height:50px;
+ border:2px solid var(--blue);
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ font-weight:bold;
+ flex:none;
 }
 
-.compose input{
-  flex:1;
-  min-width:0;
-  border:1px solid #174c6c;
-  border-radius:28px;
-  background:#061522;
-  color:#fff;
-  padding:0 17px;
-  outline:none;
+.friendTitle{
+ flex:1;
+ min-width:0;
 }
 
-.send{
-  width:55px;
-  border:0;
-  border-radius:50%;
-  background:linear-gradient(135deg,#08cfff,#00d19d);
-  font-size:24px;
-  cursor:pointer;
+.friendTitle b{
+ display:block;
+ font-size:17px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
-/* MOBILE */
-@media(max-width:800px){
+.friendTitle span{
+ display:block;
+ color:var(--muted);
+ font-size:11px;
+ margin-top:4px;
+}
 
-  .app{
-    display:block;
-    position:relative;
-  }
+.callButtons{
+ display:flex;
+ gap:6px;
+}
 
-  .side{
-    position:absolute;
-    z-index:30;
-    left:0;
-    top:0;
-    bottom:0;
-    width:82px;
-    transform:translateX(-100%);
-    transition:.2s;
-  }
+.callButton{
+ width:45px;
+ height:45px;
+ border:1px solid #12618e;
+ border-radius:12px;
+ background:#0a2a3b;
+ color:#fff;
+ font-size:20px;
+}
 
-  .side.open{
-    transform:translateX(0);
-  }
+.videoButton{
+ background:#00a987;
+}
 
-  .members{
-    position:absolute;
-    z-index:20;
-    left:0;
-    top:0;
-    bottom:0;
-    width:min(88vw,310px);
-    transform:translateX(-100%);
-    transition:.2s;
-    box-shadow:10px 0 30px #000;
-  }
+.messages{
+ flex:1;
+ min-height:0;
+ overflow:auto;
+ padding:15px 11px;
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+ background:
+ linear-gradient(#06121bee,#06121bee),
+ radial-gradient(circle at center,#0b2634,#06121b);
+}
 
-  .members.open{
-    transform:translateX(0);
-  }
+.dateLine{
+ align-self:center;
+ padding:6px 13px;
+ border-radius:20px;
+ background:#122b3b;
+ color:#a8bac5;
+ font-size:11px;
+ margin:5px 0 8px;
+}
 
-  .chat{
-    width:100%;
-    height:100%;
-  }
+.msg{
+ max-width:78%;
+ padding:10px 13px;
+ border-radius:16px;
+ background:#162b40;
+ align-self:flex-start;
+ box-shadow:0 3px 8px #0003;
+}
 
-  .top{
-    height:88px;
-    padding:8px 10px;
-  }
+.msg.mine{
+ align-self:flex-end;
+ background:#007c69;
+}
 
-  .menu{
-    display:block;
-  }
+.msgText{
+ font-size:16px;
+ line-height:1.35;
+ word-break:break-word;
+}
 
-  .cav{
-    width:48px;
-    height:48px;
-  }
+.msgBottom{
+ display:flex;
+ justify-content:flex-end;
+ gap:5px;
+ margin-top:5px;
+ color:#b6c5cc;
+ font-size:9px;
+}
 
-  .title b{
-    font-size:19px;
-  }
+.composer{
+ height:70px;
+ flex:none;
+ display:flex;
+ gap:7px;
+ align-items:center;
+ padding:8px;
+ background:#071923;
+ border-top:1px solid #104965;
+}
 
-  .title span{
-    font-size:13px;
-  }
+.emojiButton{
+ width:43px;
+ height:43px;
+ flex:none;
+ border:0;
+ background:transparent;
+ color:white;
+ font-size:23px;
+}
 
-  .act{
-    width:48px;
-    height:48px;
-    font-size:21px;
-  }
+.messageInput{
+ flex:1;
+ min-width:0;
+ height:48px;
+ border:1px solid #174c6c;
+ border-radius:25px;
+ background:#06131d;
+ color:white;
+ outline:none;
+ padding:0 16px;
+}
 
-  .msgs{
-    padding:12px 10px;
-  }
+.sendButton{
+ width:48px;
+ height:48px;
+ flex:none;
+ border:0;
+ border-radius:50%;
+ background:linear-gradient(135deg,#08cfff,#00d19d);
+ color:white;
+ font-size:21px;
+}
 
-  .bubble{
-    max-width:87%;
-  }
+/* ================= PROFILE MENU ================= */
 
-  .compose{
-    height:68px;
-  }
+.profileMenu{
+ display:none;
+ position:absolute;
+ z-index:30;
+ right:10px;
+ top:70px;
+ width:210px;
+ padding:10px;
+ background:#0a1e2b;
+ border:1px solid #166487;
+ border-radius:15px;
+ box-shadow:0 15px 35px #0008;
+}
 
-  .send{
-    width:49px;
-  }
+.profileMenu.show{display:block}
+
+.profileMenu button{
+ width:100%;
+ padding:13px;
+ border:0;
+ background:transparent;
+ color:white;
+ text-align:left;
+ border-radius:10px;
+}
+
+.profileMenu button:hover{
+ background:#123346;
+}
+
+/* ================= CALL ================= */
+
+.callModal{
+ display:none;
+ position:fixed;
+ z-index:100;
+ inset:0;
+ background:#000d;
+ align-items:center;
+ justify-content:center;
+ padding:12px;
+}
+
+.callModal.show{display:flex}
+
+.callBox{
+ width:min(720px,100%);
+ max-height:95dvh;
+ overflow:auto;
+ border:1px solid #00bfff;
+ border-radius:22px;
+ background:#071722;
+ padding:15px;
+ box-shadow:0 0 40px #008cff55;
+}
+
+.callHeader{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin-bottom:12px;
+}
+
+.callHeader h3{
+ margin:0;
+ font-size:18px;
+}
+
+.closeCall{
+ width:42px;
+ height:42px;
+ border:1px solid #31556b;
+ border-radius:11px;
+ background:#142936;
+ color:white;
+}
+
+.incoming{
+ text-align:center;
+ padding:30px 10px;
+}
+
+.incomingIcon{
+ font-size:58px;
+}
+
+.incomingName{
+ font-size:22px;
+ margin:10px 0;
+}
+
+.incomingType{
+ color:#9db2bd;
+}
+
+.callVideoGrid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px;
+}
+
+.videoBox{
+ position:relative;
+ min-height:220px;
+ background:#000;
+ border-radius:14px;
+ overflow:hidden;
+}
+
+.videoBox video{
+ width:100%;
+ height:100%;
+ min-height:220px;
+ object-fit:cover;
+ display:block;
+ background:#000;
+}
+
+.videoLabel{
+ position:absolute;
+ left:8px;
+ bottom:8px;
+ padding:5px 8px;
+ background:#000b;
+ border-radius:7px;
+ font-size:11px;
+}
+
+.callControls{
+ display:flex;
+ justify-content:center;
+ gap:8px;
+ margin-top:14px;
+ flex-wrap:wrap;
+}
+
+.callControl{
+ border:0;
+ border-radius:12px;
+ padding:12px 17px;
+ background:#123248;
+ color:white;
+}
+
+.acceptButton{
+ background:#00a884;
+}
+
+.endButton{
+ background:#d83b50;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:600px){
+
+.topBar{height:74px}
+
+.topLogo{
+ width:47px;
+ height:47px;
+}
+
+.topTitle b{font-size:19px}
+
+.chatItem{height:76px}
+
+.chatHeader{height:76px}
+
+.msg{max-width:86%}
+
+.callVideoGrid{
+ grid-template-columns:1fr;
+}
+
+.videoBox,
+.videoBox video{
+ min-height:180px;
+}
+
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<!-- ================= LOGIN ================= -->
 
-<!-- SIDEBAR -->
-<aside class="side" id="side">
+<section id="loginScreen">
 
-  <div class="logo">SF</div>
+<div class="loginBox">
 
-  <button class="nav">💬</button>
+<div class="sfLogo">SF</div>
 
-  <button class="nav" onclick="toggleMembers()">👥</button>
+<h1 class="loginTitle">
+Secret <span>Frame</span>
+</h1>
 
-  <button class="nav">🖼️</button>
+<div class="loginSub">
+🔒 Private • Real-time • Secure Chat
+</div>
 
-  <button class="nav">📞</button>
+<input
+id="loginId"
+class="loginInput"
+placeholder="Mobile Number / ID"
+autocomplete="off">
 
-  <button class="nav">📹</button>
+<input
+id="loginPassword"
+class="loginInput"
+type="password"
+placeholder="Password">
 
-  <div class="grow"></div>
+<button
+class="loginButton"
+onclick="loginUser()">
+Login
+</button>
 
-  <button class="nav logout" onclick="logout()">↪</button>
+<div
+id="loginError"
+class="loginError">
+</div>
 
-</aside>
-
-
-<!-- MEMBERS -->
-<aside class="members" id="members">
-
-  <div class="mh">
-    Members
-    <span class="dot"></span>
-  </div>
-
-  <div class="member">
-    <div class="av">SF</div>
-    <div class="info">
-      <div class="name">
-        Owner / Admin
-        <span class="dot"></span>
-      </div>
-      <div class="id">ADMIN</div>
-    </div>
-  </div>
-
-  <div class="member">
-    <div class="av">F1</div>
-    <div class="info">
-      <div class="name">
-        Friend 1
-        <span class="dot"></span>
-      </div>
-      <div class="id">7209000233</div>
-    </div>
-  </div>
-
-  <div class="member">
-    <div class="av">F2</div>
-    <div class="info">
-      <div class="name">
-        Friend 2
-        <span class="dot"></span>
-      </div>
-      <div class="id">+917337753903</div>
-    </div>
-  </div>
-
-  <div class="member">
-    <div class="av">F3</div>
-    <div class="info">
-      <div class="name">
-        Friend 3
-        <span class="dot"></span>
-      </div>
-      <div class="id">+919771094346</div>
-    </div>
-  </div>
-
-</aside>
-
-
-<!-- CHAT -->
-<main class="chat">
-
-<header class="top">
-
-  <button class="menu" onclick="toggleMembers()">☰</button>
-
-  <div class="cav">SF</div>
-
-  <div class="title">
-    <b>Secret Frame</b>
-    <span>🔒 Real-time private group • 4 Members</span>
-  </div>
-
-  <div class="actions">
-
-    <button class="act">📞</button>
-
-    <button class="act video">📹</button>
-
-  </div>
-
-</header>
-
-
-<section class="msgs" id="msgs">
-
-  <div class="empty" id="empty">
-    No messages yet.
-    <br>
-    Send a message below.
-  </div>
+</div>
 
 </section>
 
 
-<form class="compose" onsubmit="send(event)">
+<!-- ================= APP ================= -->
 
-  <input
-    id="input"
-    placeholder="Type a message..."
-    autocomplete="off"
-  >
+<section id="app">
 
-  <button class="send">
-    ➤
-  </button>
+<div class="mobileApp">
+
+<!-- CHAT LIST -->
+
+<div class="chatList">
+
+<div class="topBar">
+
+<div class="topLogo">SF</div>
+
+<div class="topTitle">
+<b>Secret Frame</b>
+<span>🔒 Private Messages</span>
+</div>
+
+<button
+class="topMenu"
+onclick="toggleProfile()">
+⋮
+</button>
+
+</div>
+
+
+<div class="search">
+
+<input
+id="searchInput"
+placeholder="🔍 Search chats..."
+oninput="searchChats()">
+
+</div>
+
+
+<div
+id="chatItems"
+class="chatItems">
+</div>
+
+</div>
+
+
+<!-- PROFILE MENU -->
+
+<div
+id="profileMenu"
+class="profileMenu">
+
+<button onclick="logoutUser()">
+🚪 Logout
+</button>
+
+<button onclick="requestNotification()">
+🔔 Enable Notifications
+</button>
+
+</div>
+
+
+<!-- INDIVIDUAL CHAT -->
+
+<div
+id="chatScreen"
+class="chatScreen">
+
+<header class="chatHeader">
+
+<button
+class="backButton"
+onclick="closeChat()">
+‹
+</button>
+
+<div
+id="friendAvatar"
+class="friendAvatar">
+F
+</div>
+
+<div class="friendTitle">
+
+<b id="friendName">
+Friend
+</b>
+
+<span id="friendStatus">
+Real-time chat
+</span>
+
+</div>
+
+<div class="callButtons">
+
+<button
+class="callButton"
+onclick="startCall('audio')">
+📞
+</button>
+
+<button
+class="callButton videoButton"
+onclick="startCall('video')">
+📹
+</button>
+
+</div>
+
+</header>
+
+
+<section
+id="messages"
+class="messages">
+</section>
+
+
+<form
+class="composer"
+onsubmit="sendMessage(event)">
+
+<button
+type="button"
+class="emojiButton"
+onclick="addEmoji()">
+😊
+</button>
+
+<input
+id="messageInput"
+class="messageInput"
+placeholder="Type a message..."
+autocomplete="off">
+
+<button
+type="submit"
+class="sendButton">
+➤
+</button>
 
 </form>
 
-</main>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= CALL MODAL ================= -->
+
+<div
+id="callModal"
+class="callModal">
+
+<div class="callBox">
+
+<div class="callHeader">
+
+<h3 id="callTitle">
+Secret Frame Call
+</h3>
+
+<button
+class="closeCall"
+onclick="endCall()">
+✕
+</button>
+
+</div>
+
+
+<!-- INCOMING -->
+
+<div
+id="incomingCall"
+class="incoming"
+style="display:none">
+
+<div class="incomingIcon">📞</div>
+
+<div
+id="incomingName"
+class="incomingName">
+Incoming Call
+</div>
+
+<div
+id="incomingType"
+class="incomingType">
+Someone is calling you
+</div>
+
+<div class="callControls">
+
+<button
+class="callControl acceptButton"
+onclick="acceptIncomingCall()">
+✓ Accept
+</button>
+
+<button
+class="callControl endButton"
+onclick="rejectIncomingCall()">
+✕ Reject
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ACTIVE -->
+
+<div
+id="activeCall"
+style="display:none">
+
+<div class="callVideoGrid">
+
+<div
+id="localBox"
+class="videoBox">
+
+<video
+id="localVideo"
+autoplay
+muted
+playsinline>
+</video>
+
+<div class="videoLabel">
+You
+</div>
+
+</div>
+
+
+<div
+id="remoteBox"
+class="videoBox">
+
+<video
+id="remoteVideo"
+autoplay
+playsinline>
+</video>
+
+<div class="videoLabel">
+Friend
+</div>
+
+</div>
+
+</div>
+
+
+<div class="callControls">
+
+<button
+class="callControl"
+onclick="toggleMicrophone()">
+🎙️ Mic
+</button>
+
+<button
+class="callControl"
+onclick="toggleCamera()">
+📷 Camera
+</button>
+
+<button
+class="callControl endButton"
+onclick="endCall()">
+☎ End Call
+</button>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -521,214 +975,1513 @@ html,body{
 <script type="module">
 
 import {
-  initializeApp
+ initializeApp
 }
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
-  getDatabase,
-  ref,
-  push,
-  onChildAdded,
-  query,
-  orderByChild
+ getDatabase,
+ ref,
+ push,
+ set,
+ onValue,
+ onChildAdded,
+ onChildRemoved,
+ get
 }
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 
-/* FIREBASE CONFIG */
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
 
-const app = initializeApp({
+const firebaseConfig={
 
-  apiKey:
-  "AIzaSyB7B00ndag8PE78pjLxFg4iok9-9_U5bz0",
+ apiKey:
+ "AIzaSyB7B00ndag8PE78pjLxFg4iok9-9_U5bz0",
 
-  authDomain:
-  "secret-frame-698ba.firebaseapp.com",
+ authDomain:
+ "secret-frame-698ba.firebaseapp.com",
 
-  databaseURL:
-  "https://secret-frame-698ba-default-rtdb.asia-southeast1.firebasedatabase.app",
+ databaseURL:
+ "https://secret-frame-698ba-default-rtdb.asia-southeast1.firebasedatabase.app",
 
-  projectId:
-  "secret-frame-698ba",
+ projectId:
+ "secret-frame-698ba",
 
-  storageBucket:
-  "secret-frame-698ba.firebasestorage.app",
+ storageBucket:
+ "secret-frame-698ba.firebasestorage.app",
 
-  messagingSenderId:
-  "601470862803",
+ messagingSenderId:
+ "601470862803",
 
-  appId:
-  "1:601470862803:web:3b666e06133804609b9b26"
+ appId:
+ "1:601470862803:web:3b666e06133804609b9b26"
 
-});
+};
 
+const app=initializeApp(firebaseConfig);
 
-const db = getDatabase(app);
-
-const messages = ref(db,"messages");
-
-
-/* CURRENT USER */
-
-window.user =
-localStorage.getItem("sfUser") ||
-"Friend 1";
+const db=getDatabase(app);
 
 
-/* MEMBERS PANEL */
+/* =====================================================
+   USERS
+===================================================== */
 
-window.toggleMembers = () => {
+const USERS={
 
-  document
-  .getElementById("members")
-  .classList
-  .toggle("open");
+ "7209000233":{
+   name:"Friend 1",
+   phone:"7209000233",
+   color:"#078ee8"
+ },
+
+ "+917337753903":{
+   name:"Friend 2",
+   phone:"+917337753903",
+   color:"#862be8"
+ },
+
+ "+919771094346":{
+   name:"Friend 3",
+   phone:"+919771094346",
+   color:"#ff7518"
+ }
 
 };
 
 
-/* LOGOUT */
+/* =====================================================
+   CURRENT USER
+===================================================== */
 
-window.logout = () => {
+let currentUserPhone=
+localStorage.getItem("sfPhone") || "";
 
-  localStorage.removeItem("sfUser");
+let currentUserName=
+localStorage.getItem("sfName") || "";
 
-  location.reload();
+let selectedFriend=null;
+
+let chatListener=null;
+
+let incomingCallListener=null;
+
+let currentCallId=null;
+
+let currentCallType="audio";
+
+let peer=null;
+
+let localStream=null;
+
+let incomingCallData=null;
+
+let pendingCandidates=[];
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+window.loginUser=async function(){
+
+ const id=
+ document.getElementById("loginId")
+ .value.trim();
+
+ const password=
+ document.getElementById("loginPassword")
+ .value;
+
+ const error=
+ document.getElementById("loginError");
+
+ error.textContent="";
+
+ if(!id || !password){
+
+   error.textContent=
+   "ID और Password डालें।";
+
+   return;
+ }
+
+ /*
+   IMPORTANT:
+   यहां आपका existing login Firebase Auth
+   लगा हो तो उसे बाद में जोड़ा जा सकता है।
+
+   अभी registered phone से user पहचान रहे हैं।
+ */
+
+ const user=USERS[id];
+
+ if(!user){
+
+   error.textContent=
+   "यह Mobile Number registered नहीं है।";
+
+   return;
+ }
+
+ if(password.length<1){
+
+   error.textContent=
+   "Password डालें।";
+
+   return;
+ }
+
+ currentUserPhone=user.phone;
+
+ currentUserName=user.name;
+
+ localStorage.setItem(
+   "sfPhone",
+   currentUserPhone
+ );
+
+ localStorage.setItem(
+   "sfName",
+   currentUserName
+ );
+
+ showApp();
 
 };
 
 
-/* SEND MESSAGE */
+/* =====================================================
+   AUTO LOGIN
+===================================================== */
 
-window.send = async (e) => {
+if(currentUserPhone && USERS[currentUserPhone]){
 
-  e.preventDefault();
+ showApp();
 
-  const input =
-  document.getElementById("input");
+}
 
-  const text =
-  input.value.trim();
 
-  if(!text) return;
+/* =====================================================
+   SHOW APP
+===================================================== */
 
-  try{
+function showApp(){
 
-    await push(messages,{
+ document
+ .getElementById("loginScreen")
+ .style.display="none";
 
-      text:text,
+ document
+ .getElementById("app")
+ .style.display="block";
 
-      sender:window.user,
+ renderChats();
 
-      createdAt:Date.now()
+ listenForIncomingCalls();
 
-    });
+}
 
-    input.value="";
 
-  }
+/* =====================================================
+   CHAT ID
+===================================================== */
 
-  catch(error){
+function getChatId(a,b){
 
-    alert(
-      "Message send नहीं हुआ. Firebase Rules check करें."
-    );
+ return [
+   String(a),
+   String(b)
+ ]
+ .sort()
+ .map(
+   x=>x.replace(/[^a-zA-Z0-9]/g,"")
+ )
+ .join("_");
 
-    console.error(error);
+}
 
-  }
+
+/* =====================================================
+   RENDER CHAT LIST
+===================================================== */
+
+function renderChats(){
+
+ const box=
+ document.getElementById("chatItems");
+
+ box.innerHTML="";
+
+ Object.values(USERS).forEach(
+   user=>{
+
+     if(
+       user.phone===
+       currentUserPhone
+     )return;
+
+     const item=
+     document.createElement("div");
+
+     item.className="chatItem";
+
+     item.dataset.name=
+     user.name.toLowerCase();
+
+     item.innerHTML=`
+
+       <div
+       class="chatAvatar"
+       style="border-color:${user.color}">
+       ${user.name.substring(0,2)}
+       </div>
+
+       <div class="chatInfo">
+
+         <div class="chatNameRow">
+
+           <div class="chatName">
+           ${user.name}
+           </div>
+
+           <div
+           id="time-${safeId(user.phone)}"
+           class="chatTime">
+           </div>
+
+         </div>
+
+         <div
+         id="last-${safeId(user.phone)}"
+         class="lastMessage">
+         Start a private chat
+         </div>
+
+       </div>
+
+       <div
+       id="unread-${safeId(user.phone)}">
+       </div>
+     `;
+
+     item.onclick=
+     ()=>openChat(user);
+
+     box.appendChild(item);
+
+     listenLastMessage(user);
+
+   }
+ );
+
+}
+
+
+/* =====================================================
+   LAST MESSAGE
+===================================================== */
+
+function listenLastMessage(user){
+
+ const chatId=
+ getChatId(
+   currentUserPhone,
+   user.phone
+ );
+
+ const messagesRef=
+ ref(
+   db,
+   "privateChats/"+chatId+"/messages"
+ );
+
+ onValue(
+   messagesRef,
+   snapshot=>{
+
+     const data=
+     snapshot.val();
+
+     if(!data)return;
+
+     const arr=
+     Object.values(data)
+     .sort(
+       (a,b)=>
+       (a.createdAt||0)-
+       (b.createdAt||0)
+     );
+
+     if(!arr.length)return;
+
+     const last=
+     arr[arr.length-1];
+
+     const lastBox=
+     document.getElementById(
+       "last-"+safeId(user.phone)
+     );
+
+     const timeBox=
+     document.getElementById(
+       "time-"+safeId(user.phone)
+     );
+
+     if(lastBox){
+
+       lastBox.textContent=
+       last.sender===currentUserPhone
+       ?"You: "+last.text
+       :last.text;
+
+     }
+
+     if(timeBox){
+
+       timeBox.textContent=
+       formatTime(last.createdAt);
+
+     }
+
+   }
+ );
+
+}
+
+
+/* =====================================================
+   OPEN CHAT
+===================================================== */
+
+window.openChat=function(user){
+
+ selectedFriend=user;
+
+ document
+ .getElementById("chatScreen")
+ .style.display="flex";
+
+ document
+ .getElementById("friendName")
+ .textContent=
+ user.name;
+
+ document
+ .getElementById("friendStatus")
+ .textContent=
+ "🔒 Private • Real-time";
+
+ document
+ .getElementById("friendAvatar")
+ .textContent=
+ user.name.substring(0,2);
+
+ document
+ .getElementById("friendAvatar")
+ .style.borderColor=
+ user.color;
+
+ loadMessages();
+
+ setTimeout(
+   ()=>{
+     document
+     .getElementById("messageInput")
+     .focus();
+   },
+   200
+ );
 
 };
 
 
-/* RECEIVE MESSAGES */
+/* =====================================================
+   LOAD INDIVIDUAL MESSAGES
+===================================================== */
 
-onChildAdded(
+function loadMessages(){
 
-  query(
-    messages,
-    orderByChild("createdAt")
-  ),
+ const box=
+ document.getElementById("messages");
 
-  (snapshot) => {
+ box.innerHTML="";
 
-    const data = snapshot.val();
+ if(chatListener){
+   chatListener();
+   chatListener=null;
+ }
 
-    const empty =
-    document.getElementById("empty");
+ const chatId=
+ getChatId(
+   currentUserPhone,
+   selectedFriend.phone
+ );
 
-    if(empty){
-      empty.remove();
-    }
+ const messagesRef=
+ ref(
+   db,
+   "privateChats/"+chatId+"/messages"
+ );
 
+ chatListener=
+ onChildAdded(
+   messagesRef,
+   snapshot=>{
 
-    const bubble =
-    document.createElement("div");
+     const data=
+     snapshot.val();
 
-    bubble.className =
-    "bubble " +
-    (
-      data.sender === window.user
-      ? "mine"
-      : ""
-    );
+     if(!data)return;
 
+     drawMessage(data);
 
-    bubble.innerHTML = `
+   }
+ );
 
-      <div class="sender"></div>
-
-      <div class="text"></div>
-
-      <div class="time"></div>
-
-    `;
-
-
-    bubble
-    .querySelector(".sender")
-    .textContent =
-    data.sender || "Friend";
+}
 
 
-    bubble
-    .querySelector(".text")
-    .textContent =
-    data.text || "";
+/* =====================================================
+   DRAW MESSAGE
+===================================================== */
+
+function drawMessage(data){
+
+ const box=
+ document.getElementById("messages");
+
+ const msg=
+ document.createElement("div");
+
+ msg.className=
+ "msg "+
+ (
+   data.sender===
+   currentUserPhone
+   ?"mine":""
+ );
+
+ const time=
+ formatTime(
+   data.createdAt
+ );
+
+ msg.innerHTML=`
+
+   <div class="msgText"></div>
+
+   <div class="msgBottom">
+     <span>${time}</span>
+     ${
+       data.sender===currentUserPhone
+       ?"<span>✓✓</span>"
+       :""
+     }
+   </div>
+ `;
+
+ msg
+ .querySelector(".msgText")
+ .textContent=
+ data.text;
+
+ box.appendChild(msg);
+
+ box.scrollTop=
+ box.scrollHeight;
+
+}
 
 
-    bubble
-    .querySelector(".time")
-    .textContent =
-    new Date(
-      data.createdAt || Date.now()
-    ).toLocaleTimeString(
-      [],
-      {
-        hour:"2-digit",
-        minute:"2-digit"
-      }
-    );
+/* =====================================================
+   SEND MESSAGE
+===================================================== */
+
+window.sendMessage=
+async function(e){
+
+ e.preventDefault();
+
+ if(!selectedFriend)return;
+
+ const input=
+ document.getElementById("messageInput");
+
+ const text=
+ input.value.trim();
+
+ if(!text)return;
+
+ const chatId=
+ getChatId(
+   currentUserPhone,
+   selectedFriend.phone
+ );
+
+ const messagesRef=
+ ref(
+   db,
+   "privateChats/"+chatId+"/messages"
+ );
+
+ try{
+
+   await push(
+     messagesRef,
+     {
+       sender:currentUserPhone,
+       senderName:currentUserName,
+       receiver:selectedFriend.phone,
+       text:text,
+       createdAt:Date.now()
+     }
+   );
+
+   input.value="";
+
+ }
+ catch(error){
+
+   alert(
+     "Message नहीं गया:\n"+
+     error.message
+   );
+
+ }
+
+};
 
 
-    document
-    .getElementById("msgs")
-    .appendChild(bubble);
+/* =====================================================
+   EMOJI
+===================================================== */
+
+window.addEmoji=function(){
+
+ const input=
+ document.getElementById("messageInput");
+
+ input.value+=" ❤️";
+
+ input.focus();
+
+};
 
 
-    const box =
-    document.getElementById("msgs");
+/* =====================================================
+   CLOSE CHAT
+===================================================== */
 
-    box.scrollTop =
-    box.scrollHeight;
+window.closeChat=function(){
 
-  }
+ if(chatListener){
 
-);
+   chatListener();
+
+   chatListener=null;
+
+ }
+
+ document
+ .getElementById("chatScreen")
+ .style.display="none";
+
+ selectedFriend=null;
+
+};
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+window.searchChats=function(){
+
+ const value=
+ document
+ .getElementById("searchInput")
+ .value
+ .toLowerCase()
+ .trim();
+
+ document
+ .querySelectorAll(".chatItem")
+ .forEach(
+   item=>{
+
+     item.style.display=
+     item.dataset.name.includes(value)
+     ?"flex"
+     :"none";
+
+   }
+ );
+
+};
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+window.toggleProfile=function(){
+
+ document
+ .getElementById("profileMenu")
+ .classList
+ .toggle("show");
+
+};
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+window.logoutUser=function(){
+
+ localStorage.removeItem("sfPhone");
+
+ localStorage.removeItem("sfName");
+
+ location.reload();
+
+};
+
+
+/* =====================================================
+   NOTIFICATION
+===================================================== */
+
+window.requestNotification=
+async function(){
+
+ if(
+   !("Notification" in window)
+ ){
+
+   alert(
+     "इस browser में notification supported नहीं है।"
+   );
+
+   return;
+ }
+
+ const permission=
+ await Notification.requestPermission();
+
+ if(permission==="granted"){
+
+   new Notification(
+     "Secret Frame",
+     {
+       body:"Notifications enabled 🔔"
+     }
+   );
+
+ }
+
+};
+
+
+/* =====================================================
+   WEBRTC SETTINGS
+===================================================== */
+
+const rtcConfig={
+
+ iceServers:[
+
+   {
+     urls:
+     "stun:stun.l.google.com:19302"
+   },
+
+   {
+     urls:
+     "stun:stun1.l.google.com:19302"
+   }
+
+ ]
+
+};
+
+
+/* =====================================================
+   START CALL
+===================================================== */
+
+window.startCall=
+async function(type){
+
+ if(!selectedFriend){
+
+   alert("पहले Friend की chat खोलें।");
+
+   return;
+
+ }
+
+ currentCallType=type;
+
+ currentCallId=
+ "call_"+
+ Date.now()+
+ "_"+
+ Math.random()
+ .toString(36)
+ .substring(2,8);
+
+ try{
+
+   localStream=
+   await navigator.mediaDevices.getUserMedia({
+
+     audio:true,
+
+     video:
+     type==="video"
+
+   });
+
+   showCallWindow(
+     "Calling "+selectedFriend.name
+   );
+
+   peer=
+   createPeer();
+
+   localStream
+   .getTracks()
+   .forEach(
+     track=>
+     peer.addTrack(
+       track,
+       localStream
+     )
+   );
+
+   const offer=
+   await peer.createOffer();
+
+   await peer.setLocalDescription(
+     offer
+   );
+
+   const callRef=
+   ref(
+     db,
+     "calls/"+currentCallId
+   );
+
+   await set(
+     callRef,
+     {
+       caller:currentUserPhone,
+       callerName:currentUserName,
+       callee:selectedFriend.phone,
+       calleeName:selectedFriend.name,
+       type:type,
+       status:"ringing",
+       offer:{
+         type:offer.type,
+         sdp:offer.sdp
+       },
+       createdAt:Date.now()
+     }
+   );
+
+   listenForAnswer();
+
+   listenRemoteCandidates(
+     "callerCandidates"
+   );
+
+ }
+ catch(error){
+
+   alert(
+     "Call start नहीं हुई:\n"+
+     error.message+
+     "\n\nCamera/Microphone permission Allow करें।"
+   );
+
+   cleanupCall();
+
+ }
+
+};
+
+
+/* =====================================================
+   CREATE PEER
+===================================================== */
+
+function createPeer(){
+
+ const pc=
+ new RTCPeerConnection(
+   rtcConfig
+ );
+
+ pc.ontrack=
+ event=>{
+
+   const remote=
+   document
+   .getElementById("remoteVideo");
+
+   remote.srcObject=
+   event.streams[0];
+
+ };
+
+ pc.onicecandidate=
+ event=>{
+
+   if(
+     !event.candidate ||
+     !currentCallId
+   )return;
+
+   const path=
+   currentCallId+
+   "/"+
+   (
+     incomingCallData
+     ?"calleeCandidates"
+     :"callerCandidates"
+   )+
+   "/"+
+   Date.now();
+
+   set(
+     ref(
+       db,
+       "calls/"+path
+     ),
+     event.candidate.toJSON()
+   );
+
+ };
+
+ return pc;
+
+}
+
+
+/* =====================================================
+   INCOMING CALL LISTENER
+===================================================== */
+
+function listenForIncomingCalls(){
+
+ if(incomingCallListener)return;
+
+ const callsRef=
+ ref(db,"calls");
+
+ incomingCallListener=
+ onValue(
+   callsRef,
+   snapshot=>{
+
+     const calls=
+     snapshot.val()||{};
+
+     const list=
+     Object.entries(calls)
+     .sort(
+       (a,b)=>
+       (b[1].createdAt||0)-
+       (a[1].createdAt||0)
+     );
+
+     for(
+       const [id,call]
+       of list
+     ){
+
+       if(
+         call.callee===
+         currentUserPhone &&
+         call.status==="ringing"
+       ){
+
+         if(
+           !currentCallId
+         ){
+
+           showIncomingCall(
+             id,
+             call
+           );
+
+         }
+
+         break;
+
+       }
+
+     }
+
+   }
+ );
+
+}
+
+
+/* =====================================================
+   INCOMING UI
+===================================================== */
+
+function showIncomingCall(id,call){
+
+ incomingCallData={
+   id:id,
+   data:call
+ };
+
+ currentCallId=id;
+
+ currentCallType=
+ call.type;
+
+ document
+ .getElementById("callModal")
+ .classList
+ .add("show");
+
+ document
+ .getElementById("incomingCall")
+ .style.display="block";
+
+ document
+ .getElementById("activeCall")
+ .style.display="none";
+
+ document
+ .getElementById("callTitle")
+ .textContent=
+ "Incoming Call";
+
+ document
+ .getElementById("incomingName")
+ .textContent=
+ call.callerName||
+ "Friend";
+
+ document
+ .getElementById("incomingType")
+ .textContent=
+ call.type==="video"
+ ?"📹 Video Call"
+ :"📞 Voice Call";
+
+}
+
+
+/* =====================================================
+   ACCEPT INCOMING
+===================================================== */
+
+window.acceptIncomingCall=
+async function(){
+
+ if(!incomingCallData)return;
+
+ const call=
+ incomingCallData.data;
+
+ try{
+
+   localStream=
+   await navigator.mediaDevices.getUserMedia({
+
+     audio:true,
+
+     video:
+     call.type==="video"
+
+   });
+
+   peer=
+   createPeer();
+
+   localStream
+   .getTracks()
+   .forEach(
+     track=>
+     peer.addTrack(
+       track,
+       localStream
+     )
+   );
+
+   await peer.setRemoteDescription(
+     new RTCSessionDescription(
+       call.offer
+     )
+   );
+
+   const answer=
+   await peer.createAnswer();
+
+   await peer.setLocalDescription(
+     answer
+   );
+
+   await set(
+     ref(
+       db,
+       "calls/"+
+       currentCallId+
+       "/answer"
+     ),
+     {
+       type:answer.type,
+       sdp:answer.sdp
+     }
+   );
+
+   await set(
+     ref(
+       db,
+       "calls/"+
+       currentCallId+
+       "/status"
+     ),
+     "connected"
+   );
+
+   showCallWindow(
+     "Connected"
+   );
+
+   listenRemoteCandidates(
+     "callerCandidates"
+   );
+
+ }
+ catch(error){
+
+   alert(
+     "Call accept नहीं हुई:\n"+
+     error.message
+   );
+
+   cleanupCall();
+
+ }
+
+};
+
+
+/* =====================================================
+   REJECT
+===================================================== */
+
+window.rejectIncomingCall=
+async function(){
+
+ if(!currentCallId)return;
+
+ await set(
+   ref(
+     db,
+     "calls/"+
+     currentCallId+
+     "/status"
+   ),
+   "rejected"
+ );
+
+ cleanupCall();
+
+};
+
+
+/* =====================================================
+   ANSWER LISTENER
+===================================================== */
+
+function listenForAnswer(){
+
+ onValue(
+   ref(
+     db,
+     "calls/"+
+     currentCallId+
+     "/answer"
+   ),
+   async snapshot=>{
+
+     const answer=
+     snapshot.val();
+
+     if(
+       answer &&
+       peer &&
+       !peer.currentRemoteDescription
+     ){
+
+       try{
+
+         await peer.setRemoteDescription(
+           new RTCSessionDescription(
+             answer
+           )
+         );
+
+         showCallWindow(
+           "Connected"
+         );
+
+       }
+       catch(e){}
+
+     }
+
+   }
+ );
+
+}
+
+
+/* =====================================================
+   REMOTE ICE CANDIDATES
+===================================================== */
+
+function listenRemoteCandidates(type){
+
+ onChildAdded(
+   ref(
+     db,
+     "calls/"+
+     currentCallId+
+     "/"+
+     type
+   ),
+   async snapshot=>{
+
+     const candidate=
+     snapshot.val();
+
+     if(!candidate || !peer)return;
+
+     try{
+
+       if(
+         peer.remoteDescription
+       ){
+
+         await peer.addIceCandidate(
+           new RTCIceCandidate(
+             candidate
+           )
+         );
+
+       }
+       else{
+
+         pendingCandidates.push(
+           candidate
+         );
+
+       }
+
+     }
+     catch(e){}
+
+   }
+ );
+
+}
+
+
+/* =====================================================
+   SHOW ACTIVE CALL
+===================================================== */
+
+function showCallWindow(title){
+
+ document
+ .getElementById("callModal")
+ .classList
+ .add("show");
+
+ document
+ .getElementById("incomingCall")
+ .style.display="none";
+
+ document
+ .getElementById("activeCall")
+ .style.display="block";
+
+ document
+ .getElementById("callTitle")
+ .textContent=
+ "📞 "+title;
+
+ document
+ .getElementById("localVideo")
+ .srcObject=
+ localStream;
+
+ if(
+   currentCallType==="audio"
+ ){
+
+   document
+   .getElementById("localBox")
+   .style.display="none";
+
+   document
+   .getElementById("remoteBox")
+   .style.minHeight="260px";
+
+ }
+ else{
+
+   document
+   .getElementById("localBox")
+   .style.display="block";
+
+ }
+
+}
+
+
+/* =====================================================
+   MICROPHONE
+===================================================== */
+
+window.toggleMicrophone=function(){
+
+ if(!localStream)return;
+
+ const track=
+ localStream
+ .getAudioTracks()[0];
+
+ if(!track)return;
+
+ track.enabled=
+ !track.enabled;
+
+};
+
+
+/* =====================================================
+   CAMERA
+===================================================== */
+
+window.toggleCamera=function(){
+
+ if(!localStream)return;
+
+ const track=
+ localStream
+ .getVideoTracks()[0];
+
+ if(!track)return;
+
+ track.enabled=
+ !track.enabled;
+
+};
+
+
+/* =====================================================
+   END CALL
+===================================================== */
+
+window.endCall=async function(){
+
+ if(currentCallId){
+
+   try{
+
+     await set(
+       ref(
+         db,
+         "calls/"+
+         currentCallId+
+         "/status"
+       ),
+       "ended"
+     );
+
+   }
+   catch(e){}
+
+ }
+
+ cleanupCall();
+
+};
+
+
+/* =====================================================
+   CLEANUP CALL
+===================================================== */
+
+function cleanupCall(){
+
+ if(localStream){
+
+   localStream
+   .getTracks()
+   .forEach(
+     track=>
+     track.stop()
+   );
+
+   localStream=null;
+
+ }
+
+ if(peer){
+
+   peer.close();
+
+   peer=null;
+
+ }
+
+ document
+ .getElementById("localVideo")
+ .srcObject=null;
+
+ document
+ .getElementById("remoteVideo")
+ .srcObject=null;
+
+ document
+ .getElementById("callModal")
+ .classList
+ .remove("show");
+
+ document
+ .getElementById("incomingCall")
+ .style.display="none";
+
+ document
+ .getElementById("activeCall")
+ .style.display="none";
+
+ incomingCallData=null;
+
+ currentCallId=null;
+
+ pendingCandidates=[];
+
+}
+
+
+/* =====================================================
+   FORMAT TIME
+===================================================== */
+
+function formatTime(time){
+
+ if(!time)return"";
+
+ return new Date(time)
+ .toLocaleTimeString(
+   [],
+   {
+     hour:"2-digit",
+     minute:"2-digit"
+   }
+ );
+
+}
+
+
+/* =====================================================
+   SAFE ID
+===================================================== */
+
+function safeId(value){
+
+ return String(value)
+ .replace(
+   /[^a-zA-Z0-9]/g,
+   ""
+ );
+
+}
+
+
+/* =====================================================
+   NOTIFICATION FOR NEW MESSAGE
+===================================================== */
+
+onValue(
+ ref(db,"privateChats"),
+ snapshot=>{
+
+   if(
+     !currentUserPhone
+   )return;
+
+   const chats=
+   snapshot.val()||{};
+
+   Object.values(chats)
+   .forEach(
+     chat=>{
+
+       if(!chat.messages)return;
+
+       const arr=
+       Object.values(chat.messages);
+
+       if(!arr.length)return;
+
+       const last=
+       arr[arr.length-1];
+
+       if(
+         last.receiver===
+         currentUserPhone &&
+         last.sender!==
+         currentUserPhone
+       ){
+
+         if(
+           document.hidden &&
+           "Notification" in window &&
+           Notification.permission==="granted"
+         ){
+
+           new Notification(
+             last.senderName||
+             "Secret Frame",
+             {
+               body:last.text,
+               icon:""
+             }
+           );
+
+         }
+
+       }
+
+     }
+   );
+
+ });
+
 
 </script>
 
 </body>
-</html>
+  </html>
