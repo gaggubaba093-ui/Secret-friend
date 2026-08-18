@@ -1630,8 +1630,74 @@ urls:
 /* ================= START CALL ================= */
 
 window.startCall=
-async function(type){
+async
+async function fetchMember(phone){
 
+    const wanted = String(phone || "")
+        .replace(/\D/g,"")
+        .slice(-10);
+
+    return new Promise(resolve => {
+
+        onValue(
+            ref(db,"members"),
+
+            snapshot => {
+
+                const data = snapshot.val() || {};
+
+                let found = null;
+
+                Object.entries(data).forEach(([key, member]) => {
+
+                    if (!member || typeof member !== "object") return;
+
+                    const keyPhone = String(key)
+                        .replace(/\D/g,"")
+                        .slice(-10);
+
+                    const memberPhone = String(member.phone || "")
+                        .replace(/\D/g,"")
+                        .slice(-10);
+
+                    /*
+                      अब मोबाइल नंबर इन दोनों जगहों पर
+                      मिलाया जाएगा:
+                      1. Firebase member key
+                      2. member.phone
+                    */
+
+                    if (
+                        keyPhone === wanted ||
+                        memberPhone === wanted
+                    ) {
+
+                        found = {
+                            ...member,
+
+                            phone:
+                                memberPhone || keyPhone,
+
+                            loginPhone: wanted,
+
+                            memberKey: key
+                        };
+
+                    }
+
+                });
+
+                resolve(found);
+
+            },
+
+            () => resolve(null),
+
+            { onlyOnce:true }
+        );
+
+    });
+}
 if(!selected){
 
 alert(
