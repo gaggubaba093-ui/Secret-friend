@@ -86,11 +86,23 @@ color:#fff;
 font-weight:bold
 }
 
+.loginBtn:disabled{
+opacity:.6
+}
+
 .error{
 text-align:center;
 color:#ff6878;
 min-height:25px;
-margin-top:10px
+margin-top:10px;
+font-size:14px
+}
+
+.hint{
+text-align:center;
+color:#718b9c;
+font-size:11px;
+margin-top:8px
 }
 
 #app{
@@ -223,7 +235,12 @@ background:#00e85a;
 margin-left:5px
 }
 
-/* CHAT */
+.empty{
+text-align:center;
+color:#7892a2;
+padding:35px 20px;
+font-size:14px
+}
 
 .chat{
 position:fixed;
@@ -360,8 +377,6 @@ color:#fff;
 font-size:21px
 }
 
-/* CALL */
-
 .call{
 display:none;
 position:fixed;
@@ -447,7 +462,6 @@ background:#00a884
 }
 
 @media(max-width:600px){
-
 .videos{
 grid-template-columns:1fr
 }
@@ -456,7 +470,6 @@ grid-template-columns:1fr
 .videoBox video{
 min-height:180px
 }
-
 }
 </style>
 </head>
@@ -492,11 +505,20 @@ placeholder="Password"
 autocomplete="current-password"
 >
 
-<button class="loginBtn" onclick="login()">
+<button
+id="loginButton"
+class="loginBtn"
+type="button"
+onclick="login()"
+>
 Login
 </button>
 
 <div id="error" class="error"></div>
+
+<div class="hint">
+Password न दिया हो तो Mobile के आखिरी 4 अंक इस्तेमाल करें।
+</div>
 
 </div>
 
@@ -511,26 +533,22 @@ Login
 
 <div class="top">
 
-<div class="topLogo">
-SF
-</div>
+<div class="topLogo">SF</div>
 
 <div class="topTitle">
-
 <b>Secret Frame</b>
-
-<span>
-🔒 Private Messages
-</span>
-
+<span>🔒 Private Messages</span>
 </div>
 
-<button class="menu" onclick="logout()">
+<button
+class="menu"
+type="button"
+onclick="logout()"
+>
 ↪
 </button>
 
 </div>
-
 
 <div class="search">
 
@@ -541,7 +559,6 @@ oninput="searchPeople()"
 >
 
 </div>
-
 
 <div id="people" class="list"></div>
 
@@ -554,7 +571,11 @@ oninput="searchPeople()"
 
 <div class="chatHeader">
 
-<button class="back" onclick="closeChat()">
+<button
+class="back"
+type="button"
+onclick="closeChat()"
+>
 ‹
 </button>
 
@@ -576,6 +597,7 @@ Friend
 
 <button
 class="callBtn"
+type="button"
 onclick="startCall('audio')"
 >
 📞
@@ -583,6 +605,7 @@ onclick="startCall('audio')"
 
 <button
 class="callBtn video"
+type="button"
 onclick="startCall('video')"
 >
 📹
@@ -590,9 +613,7 @@ onclick="startCall('video')"
 
 </div>
 
-
 <div id="messages" class="messages"></div>
-
 
 <form
 class="compose"
@@ -605,7 +626,10 @@ placeholder="Type a message..."
 autocomplete="off"
 >
 
-<button class="send">
+<button
+class="send"
+type="submit"
+>
 ➤
 </button>
 
@@ -630,6 +654,7 @@ Secret Frame Call
 
 <button
 class="close"
+type="button"
 onclick="endCall()"
 >
 ✕
@@ -658,6 +683,7 @@ Incoming Call
 
 <button
 class="control accept"
+type="button"
 onclick="acceptCall()"
 >
 ✓ Accept
@@ -665,6 +691,7 @@ onclick="acceptCall()"
 
 <button
 class="control end"
+type="button"
 onclick="rejectCall()"
 >
 ✕ Reject
@@ -705,11 +732,11 @@ playsinline
 
 </div>
 
-
 <div class="controls">
 
 <button
 class="control"
+type="button"
 onclick="toggleMic()"
 >
 🎙️ Mic
@@ -717,6 +744,7 @@ onclick="toggleMic()"
 
 <button
 class="control"
+type="button"
 onclick="toggleCamera()"
 >
 📷 Camera
@@ -724,6 +752,7 @@ onclick="toggleCamera()"
 
 <button
 class="control end"
+type="button"
 onclick="endCall()"
 >
 ☎ End
@@ -738,11 +767,15 @@ onclick="endCall()"
 </div>
 
 
-<!-- ================= FIREBASE ================= -->
-
 <script type="module">
 
-import { initializeApp }
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import {
+initializeApp
+}
 from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
@@ -756,14 +789,10 @@ onChildAdded
 from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
-
 const firebaseConfig = {
 
 apiKey:
-"A<SECRET>",
+"AIzaSyB7B00ndag8PE78pjLxFg4iok9-9_U5bz0",
 
 authDomain:
 "secret-frame-698ba.firebaseapp.com",
@@ -807,35 +836,6 @@ let messageListener = null;
 
 
 /* =====================================================
-   IMPORTANT PHONE NORMALIZER
-===================================================== */
-
-function normalizePhone(phone){
-
-let p =
-String(phone || "")
-.replace(/\D/g,"");
-
-/*
- भारत के नंबर को हमेशा
- 10 digit format में रखें
-*/
-
-if(
-p.startsWith("91") &&
-p.length === 12
-){
-
-p = p.substring(2);
-
-}
-
-return p;
-
-}
-
-
-/* =====================================================
    LOGIN
 ===================================================== */
 
@@ -850,12 +850,15 @@ document.getElementById("loginPassword");
 const error =
 document.getElementById("error");
 
+const button =
+document.getElementById("loginButton");
+
+error.style.color = "#ff6878";
 
 error.textContent = "";
 
-
 const phone =
-normalizePhone(phoneInput.value);
+phoneInput.value.trim();
 
 const password =
 passwordInput.value.trim();
@@ -864,20 +867,9 @@ passwordInput.value.trim();
 if(!phone){
 
 error.textContent =
-"Mobile Number डालें।";
+"मोबाइल नंबर डालें।";
 
 return;
-
-}
-
-
-if(phone.length !== 10){
-
-error.textContent =
-"10 digit Mobile Number डालें।";
-
-return;
-
 }
 
 
@@ -887,14 +879,31 @@ error.textContent =
 "Password डालें।";
 
 return;
-
 }
+
+
+const clean =
+phone.replace(/\D/g,"");
+
+
+if(clean.length < 10){
+
+error.textContent =
+"सही 10 अंकों का मोबाइल नंबर डालें।";
+
+return;
+}
+
+
+button.disabled = true;
+
+button.textContent = "Checking...";
 
 
 try{
 
 const member =
-await fetchMember(phone);
+await fetchMember(clean);
 
 
 if(!member){
@@ -902,47 +911,56 @@ if(!member){
 error.textContent =
 "यह Mobile Number registered नहीं है।";
 
-return;
+button.disabled = false;
 
+button.textContent = "Login";
+
+return;
 }
 
 
 /*
- Password Firebase members record से check होगा।
+=======================================================
+PASSWORD SYSTEM
+
+1. अगर Firebase में password मौजूद है:
+   वही password चलेगा।
+
+2. अगर password Firebase में नहीं है:
+   Mobile के आखिरी 4 अंक password होंगे।
+=======================================================
 */
 
-if(
-!member.password
-){
+const savedPassword =
+String(member.password || "").trim();
 
-error.textContent =
-"इस member का password Firebase में सेट नहीं है।";
+const defaultPassword =
+clean.slice(-4);
 
-return;
-
-}
+const correctPassword =
+savedPassword || defaultPassword;
 
 
-if(
-String(member.password) !==
-String(password)
-){
+if(password !== correctPassword){
 
 error.textContent =
 "Password गलत है।";
 
-return;
+button.disabled = false;
 
+button.textContent = "Login";
+
+return;
 }
 
 
-/* ================= SUCCESS ================= */
-
 me =
-normalizePhone(member.phone);
+String(member.phone || clean)
+.replace(/\D/g,"");
+
 
 myName =
-member.name || "Friend";
+String(member.name || "Friend");
 
 
 localStorage.setItem(
@@ -956,15 +974,31 @@ myName
 );
 
 
-openApp();
+error.style.color =
+"#00e85a";
 
-}
-catch(e){
+error.textContent =
+"Login successful ✓";
+
+
+setTimeout(
+()=>{
+openApp();
+},
+300
+);
+
+
+}catch(e){
 
 console.error(e);
 
 error.textContent =
-"Login error: " + e.message;
+"Firebase से connection नहीं हो पाया।";
+
+button.disabled = false;
+
+button.textContent = "Login";
 
 }
 
@@ -972,65 +1006,129 @@ error.textContent =
 
 
 /* =====================================================
-   FIND MEMBER
-   +917337753903
-   917337753903
-   7337753903
-   सभी एक ही माने जाएंगे
+   FETCH MEMBER
 ===================================================== */
 
 async function fetchMember(phone){
 
-return new Promise(resolve => {
+return new Promise(
+resolve=>{
 
 onValue(
-
 ref(db,"members"),
 
-snapshot => {
+snapshot=>{
 
 const data =
 snapshot.val() || {};
 
 let found = null;
 
-const entered =
-normalizePhone(phone);
 
+/*
+-------------------------------------------------------
+FORMAT 1
 
-Object.values(data).forEach(member => {
+members
+  7209000233
+    name
+    phone
+    password
+-------------------------------------------------------
+*/
 
 if(
-!member ||
-!member.phone
+data[phone] &&
+typeof data[phone] === "object"
 ){
 
-return;
+found = {
+...data[phone],
+phone:
+data[phone].phone || phone
+};
 
 }
 
 
-const saved =
-normalizePhone(member.phone);
+/*
+-------------------------------------------------------
+FORMAT 2
+
+members
+  randomKey
+    name
+    phone
+    password
+-------------------------------------------------------
+*/
+
+if(!found){
+
+Object.entries(data)
+.forEach(
+([key,member])=>{
+
+if(!member) return;
 
 
-if(saved === entered){
+if(
+typeof member === "object" &&
+String(
+member.phone || ""
+)
+.replace(/\D/g,"") === phone
+){
 
-found = member;
+found = {
+...member,
+phone:
+member.phone || phone
+};
 
 }
 
-});
 
+if(
+!found &&
+typeof member === "string" &&
+key === phone
+){
+
+found = {
+name:member,
+phone:phone
+};
+
+}
+
+}
+);
+
+}
+
+
+/*
+-------------------------------------------------------
+FORMAT 3
+
+members
+  "test"
+
+ऐसे पुराने record को ignore नहीं करेंगे।
+लेकिन login के लिए phone चाहिए।
+-------------------------------------------------------
+*/
 
 resolve(found);
 
 },
-
 {
 onlyOnce:true
 }
+);
 
+}
 );
 
 }
@@ -1042,15 +1140,11 @@ onlyOnce:true
 
 function openApp(){
 
-document.getElementById(
-"login"
-).style.display = "none";
+document.getElementById("login")
+.style.display = "none";
 
-
-document.getElementById(
-"app"
-).style.display = "block";
-
+document.getElementById("app")
+.style.display = "block";
 
 loadMembers();
 
@@ -1066,10 +1160,9 @@ listenIncomingCalls();
 function loadMembers(){
 
 onValue(
-
 ref(db,"members"),
 
-snapshot => {
+snapshot=>{
 
 const data =
 snapshot.val() || {};
@@ -1077,26 +1170,18 @@ snapshot.val() || {};
 const box =
 document.getElementById("people");
 
-
 box.innerHTML = "";
 
-
-Object.values(data).forEach(member => {
-
-if(!member || !member.phone){
-
-return;
-
-}
+let count = 0;
 
 
-/*
- अपने नंबर को list में मत दिखाओ
-*/
+Object.entries(data)
+.forEach(
+([key,raw])=>{
 
 if(
-normalizePhone(member.phone) ===
-normalizePhone(me)
+!raw ||
+typeof raw !== "object"
 ){
 
 return;
@@ -1104,39 +1189,67 @@ return;
 }
 
 
+const member = {
+...raw
+};
+
+
+member.phone =
+String(
+member.phone || key || ""
+)
+.replace(/\D/g,"");
+
+
+member.name =
+String(
+member.name || "Friend"
+);
+
+
+if(!member.phone){
+
+return;
+
+}
+
+
+if(member.phone === me){
+
+return;
+
+}
+
+
+count++;
+
+
 const row =
 document.createElement("div");
 
-row.className =
-"person";
-
+row.className = "person";
 
 row.dataset.name =
-String(
-member.name || "Friend"
-).toLowerCase();
+member.name.toLowerCase();
 
 
-const name =
-member.name || "Friend";
+const initials =
+member.name
+.substring(0,2)
+.toUpperCase();
 
 
 row.innerHTML = `
 
 <div class="avatar">
-${escapeHtml(
-name.substring(0,2).toUpperCase()
-)}
+${escapeHTML(initials)}
 </div>
 
 <div class="info">
 
 <div class="name">
-
-${escapeHtml(name)}
-
+${escapeHTML(member.name)}
 <span class="dot"></span>
-
 </div>
 
 <div
@@ -1151,8 +1264,10 @@ Start a private chat
 `;
 
 
-row.onclick = () =>
+row.onclick =
+()=>{
 openChat(member);
+};
 
 
 box.appendChild(row);
@@ -1160,10 +1275,21 @@ box.appendChild(row);
 
 listenLastMessage(member);
 
-});
+}
+);
+
+
+if(count === 0){
+
+box.innerHTML = `
+<div class="empty">
+अभी कोई दूसरा registered member नहीं मिला।
+</div>
+`;
 
 }
 
+}
 );
 
 }
@@ -1180,32 +1306,29 @@ chatId(me,member.phone);
 
 
 onValue(
-
 ref(
 db,
 "privateChats/"+id+"/messages"
 ),
 
-snapshot => {
+snapshot=>{
 
 const data =
 snapshot.val();
 
-
-if(!data)return;
+if(!data) return;
 
 
 const arr =
 Object.values(data);
 
-
-if(!arr.length)return;
+if(!arr.length) return;
 
 
 arr.sort(
-(a,b) =>
-(a.createdAt || 0) -
-(b.createdAt || 0)
+(a,b)=>
+(a.createdAt||0) -
+(b.createdAt||0)
 );
 
 
@@ -1222,16 +1345,15 @@ document.getElementById(
 if(box){
 
 box.textContent =
-normalizePhone(last.sender) ===
-normalizePhone(me)
-
-? "You: "+last.text
-: last.text;
-
-}
+last.sender === me
+?
+"You: "+last.text
+:
+last.text;
 
 }
 
+}
 );
 
 }
@@ -1241,7 +1363,8 @@ normalizePhone(me)
    OPEN CHAT
 ===================================================== */
 
-window.openChat = function(member){
+window.openChat =
+function(member){
 
 selected = member;
 
@@ -1249,20 +1372,21 @@ selected = member;
 document.getElementById(
 "chatName"
 ).textContent =
-member.name || "Friend";
+member.name;
 
 
 document.getElementById(
 "chatAvatar"
 ).textContent =
-String(member.name || "F")
+member.name
 .substring(0,2)
 .toUpperCase();
 
 
 document.getElementById(
 "chat"
-).style.display = "flex";
+).style.display =
+"flex";
 
 
 loadMessages();
@@ -1277,13 +1401,14 @@ loadMessages();
 function chatId(a,b){
 
 return [
-
-normalizePhone(a),
-
-normalizePhone(b)
-
+String(a),
+String(b)
 ]
 .sort()
+.map(
+x=>
+x.replace(/\D/g,"")
+)
 .join("_");
 
 }
@@ -1299,7 +1424,6 @@ const box =
 document.getElementById(
 "messages"
 );
-
 
 box.innerHTML = "";
 
@@ -1321,7 +1445,6 @@ chatId(me,selected.phone);
 
 
 messageListener =
-
 onChildAdded(
 
 ref(
@@ -1329,11 +1452,10 @@ db,
 "privateChats/"+id+"/messages"
 ),
 
-snap => {
+snap=>{
 
 const data =
 snap.val();
-
 
 if(!data)return;
 
@@ -1343,13 +1465,13 @@ document.createElement("div");
 
 
 msg.className =
-"msg " +
-
+"msg "+
 (
-normalizePhone(data.sender) ===
-normalizePhone(me)
-? "mine"
-: ""
+data.sender === me
+?
+"mine"
+:
+""
 );
 
 
@@ -1358,16 +1480,8 @@ msg.innerHTML = `
 <div class="msgText"></div>
 
 <div class="msgTime">
-
 ${time(data.createdAt)}
-
-${
-normalizePhone(data.sender) ===
-normalizePhone(me)
-? " ✓✓"
-: ""
-}
-
+${data.sender===me ? " ✓✓" : ""}
 </div>
 
 `;
@@ -1380,7 +1494,6 @@ data.text || "";
 
 
 box.appendChild(msg);
-
 
 box.scrollTop =
 box.scrollHeight;
@@ -1396,7 +1509,8 @@ box.scrollHeight;
    SEND MESSAGE
 ===================================================== */
 
-window.sendMessage = async function(e){
+window.sendMessage =
+async function(e){
 
 e.preventDefault();
 
@@ -1421,6 +1535,8 @@ const id =
 chatId(me,selected.phone);
 
 
+try{
+
 await push(
 
 ref(
@@ -1429,28 +1545,26 @@ db,
 ),
 
 {
-
-sender:
-normalizePhone(me),
-
-senderName:
-myName,
-
-receiver:
-normalizePhone(selected.phone),
-
-text:
-text,
-
-createdAt:
-Date.now()
-
+sender:me,
+senderName:myName,
+receiver:selected.phone,
+text:text,
+createdAt:Date.now()
 }
 
 );
 
 
 input.value = "";
+
+
+}catch(e){
+
+alert(
+"Message send नहीं हुआ। Firebase Rules check करें।"
+);
+
+}
 
 };
 
@@ -1459,25 +1573,31 @@ input.value = "";
    SEARCH
 ===================================================== */
 
-window.searchPeople = function(){
+window.searchPeople =
+function(){
 
 const q =
-document
-.getElementById("search")
+document.getElementById(
+"search"
+)
 .value
 .toLowerCase();
 
 
 document
 .querySelectorAll(".person")
-.forEach(row => {
+.forEach(
+row=>{
 
 row.style.display =
 row.dataset.name.includes(q)
-? "flex"
-: "none";
+?
+"flex"
+:
+"none";
 
-});
+}
+);
 
 };
 
@@ -1486,7 +1606,8 @@ row.dataset.name.includes(q)
    CLOSE CHAT
 ===================================================== */
 
-window.closeChat = function(){
+window.closeChat =
+function(){
 
 if(messageListener){
 
@@ -1499,7 +1620,8 @@ messageListener = null;
 
 document.getElementById(
 "chat"
-).style.display = "none";
+).style.display =
+"none";
 
 
 selected = null;
@@ -1511,7 +1633,8 @@ selected = null;
    LOGOUT
 ===================================================== */
 
-window.logout = function(){
+window.logout =
+function(){
 
 localStorage.removeItem(
 "sfPhone"
@@ -1527,24 +1650,13 @@ location.reload();
 
 
 /* =====================================================
-   SAFE
+   HELPERS
 ===================================================== */
 
 function safe(x){
 
-return normalizePhone(x);
-
-}
-
-
-function escapeHtml(value){
-
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+return String(x)
+.replace(/\D/g,"");
 
 }
 
@@ -1553,7 +1665,8 @@ function time(t){
 
 return new Date(
 t || Date.now()
-).toLocaleTimeString(
+)
+.toLocaleTimeString(
 [],
 {
 hour:"2-digit",
@@ -1564,8 +1677,20 @@ minute:"2-digit"
 }
 
 
+function escapeHTML(value){
+
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
 /* =====================================================
-   WEBRTC CALL
+   WEBRTC
 ===================================================== */
 
 let pc = null;
@@ -1582,17 +1707,14 @@ let incoming = null;
 const rtcConfig = {
 
 iceServers:[
-
 {
 urls:
 "stun:stun.l.google.com:19302"
 },
-
 {
 urls:
 "stun:stun1.l.google.com:19302"
 }
-
 ]
 
 };
@@ -1602,7 +1724,8 @@ urls:
    START CALL
 ===================================================== */
 
-window.startCall = async function(type){
+window.startCall =
+async function(type){
 
 if(!selected){
 
@@ -1652,20 +1775,20 @@ rtcConfig
 
 stream
 .getTracks()
-.forEach(track => {
-
+.forEach(
+track=>{
 pc.addTrack(
 track,
 stream
 );
+}
+);
 
-});
 
+pc.ontrack =
+e=>{
 
-pc.ontrack = e => {
-
-document
-.getElementById(
+document.getElementById(
 "remoteVideo"
 )
 .srcObject =
@@ -1674,7 +1797,8 @@ e.streams[0];
 };
 
 
-pc.onicecandidate = e => {
+pc.onicecandidate =
+e=>{
 
 if(!e.candidate)return;
 
@@ -1712,55 +1836,31 @@ db,
 ),
 
 {
-
-caller:
-normalizePhone(me),
-
-callerName:
-myName,
-
-callee:
-normalizePhone(
-selected.phone
-),
-
-calleeName:
-selected.name,
-
-type:
-type,
-
-status:
-"ringing",
-
+caller:me,
+callerName:myName,
+callee:selected.phone,
+calleeName:selected.name,
+type:type,
+status:"ringing",
 offer:{
-
-type:
-offer.type,
-
-sdp:
-offer.sdp
-
+type:offer.type,
+sdp:offer.sdp
 },
-
-createdAt:
-Date.now()
-
+createdAt:Date.now()
 }
 
 );
 
 
-/* ANSWER LISTENER */
-
 onValue(
 
 ref(
 db,
-"calls/"+callId+"/answer"
+"calls/"+callId+
+"/answer"
 ),
 
-async snap => {
+async snap=>{
 
 const answer =
 snap.val();
@@ -1780,10 +1880,7 @@ answer
 
 );
 
-
-showActive(
-"Connected"
-);
+showActive("Connected");
 
 }
 
@@ -1791,8 +1888,6 @@ showActive(
 
 );
 
-
-/* CALLEE ICE */
 
 onChildAdded(
 
@@ -1802,7 +1897,7 @@ db,
 "/calleeCandidates"
 ),
 
-async snap => {
+async snap=>{
 
 if(!pc)return;
 
@@ -1817,18 +1912,14 @@ snap.val()
 
 );
 
-}catch(e){
-
-console.log(e);
-
-}
+}catch(e){}
 
 }
 
 );
 
-}
-catch(e){
+
+}catch(e){
 
 alert(
 "Camera/Microphone permission Allow करें.\n\n"+
@@ -1852,7 +1943,7 @@ onValue(
 
 ref(db,"calls"),
 
-snapshot => {
+snapshot=>{
 
 const calls =
 snapshot.val() || {};
@@ -1868,23 +1959,15 @@ calls[id];
 
 if(
 
-normalizePhone(c.callee) ===
-normalizePhone(me)
-
-&&
-c.status === "ringing"
-
-&&
+c.callee === me &&
+c.status === "ringing" &&
 !callId
 
 ){
 
 incoming = {
-
 id:id,
-
 data:c
-
 };
 
 
@@ -1895,17 +1978,20 @@ callType = c.type;
 
 document.getElementById(
 "call"
-).style.display = "flex";
+).style.display =
+"flex";
 
 
 document.getElementById(
 "incoming"
-).style.display = "block";
+).style.display =
+"block";
 
 
 document.getElementById(
 "activeCall"
-).style.display = "none";
+).style.display =
+"none";
 
 
 document.getElementById(
@@ -1917,19 +2003,17 @@ document.getElementById(
 document.getElementById(
 "incomingName"
 ).textContent =
-c.callerName ||
-"Friend";
+c.callerName || "Friend";
 
 
 document.getElementById(
 "incomingType"
 ).textContent =
-
 c.type === "video"
-
-? "📹 Video Call"
-
-: "📞 Voice Call";
+?
+"📹 Video Call"
+:
+"📞 Voice Call";
 
 
 break;
@@ -1949,7 +2033,8 @@ break;
    ACCEPT CALL
 ===================================================== */
 
-window.acceptCall = async function(){
+window.acceptCall =
+async function(){
 
 if(!incoming)return;
 
@@ -1980,20 +2065,20 @@ rtcConfig
 
 stream
 .getTracks()
-.forEach(track => {
-
+.forEach(
+track=>{
 pc.addTrack(
 track,
 stream
 );
+}
+);
 
-});
 
+pc.ontrack =
+e=>{
 
-pc.ontrack = e => {
-
-document
-.getElementById(
+document.getElementById(
 "remoteVideo"
 )
 .srcObject =
@@ -2002,7 +2087,8 @@ e.streams[0];
 };
 
 
-pc.onicecandidate = e => {
+pc.onicecandidate =
+e=>{
 
 if(!e.candidate)return;
 
@@ -2045,17 +2131,13 @@ await set(
 
 ref(
 db,
-"calls/"+callId+"/answer"
+"calls/"+callId+
+"/answer"
 ),
 
 {
-
-type:
-answer.type,
-
-sdp:
-answer.sdp
-
+type:answer.type,
+sdp:answer.sdp
 }
 
 );
@@ -2065,7 +2147,8 @@ await set(
 
 ref(
 db,
-"calls/"+callId+"/status"
+"calls/"+callId+
+"/status"
 ),
 
 "connected"
@@ -2073,12 +2156,8 @@ db,
 );
 
 
-showActive(
-"Connected"
-);
+showActive("Connected");
 
-
-/* CALLER ICE */
 
 onChildAdded(
 
@@ -2088,7 +2167,7 @@ db,
 "/callerCandidates"
 ),
 
-async snap => {
+async snap=>{
 
 try{
 
@@ -2100,19 +2179,14 @@ snap.val()
 
 );
 
-}
-catch(e){
-
-console.log(e);
-
-}
+}catch(e){}
 
 }
 
 );
 
-}
-catch(e){
+
+}catch(e){
 
 alert(
 "Call accept नहीं हुई:\n"+
@@ -2130,9 +2204,12 @@ cleanup();
    REJECT
 ===================================================== */
 
-window.rejectCall = async function(){
+window.rejectCall =
+async function(){
 
 if(callId){
+
+try{
 
 await set(
 
@@ -2145,6 +2222,8 @@ db,
 "rejected"
 
 );
+
+}catch(e){}
 
 }
 
@@ -2162,17 +2241,20 @@ function showActive(title){
 
 document.getElementById(
 "call"
-).style.display = "flex";
+).style.display =
+"flex";
 
 
 document.getElementById(
 "incoming"
-).style.display = "none";
+).style.display =
+"none";
 
 
 document.getElementById(
 "activeCall"
-).style.display = "block";
+).style.display =
+"block";
 
 
 document.getElementById(
@@ -2191,27 +2273,30 @@ if(callType === "audio"){
 
 document.getElementById(
 "localVideo"
-).style.display =
+)
+.style.display =
 "none";
 
 
 document.getElementById(
 "remoteVideo"
-).style.display =
+)
+.style.display =
 "none";
 
-}
-else{
+}else{
 
 document.getElementById(
 "localVideo"
-).style.display =
+)
+.style.display =
 "block";
 
 
 document.getElementById(
 "remoteVideo"
-).style.display =
+)
+.style.display =
 "block";
 
 }
@@ -2220,10 +2305,11 @@ document.getElementById(
 
 
 /* =====================================================
-   MICROPHONE
+   MIC
 ===================================================== */
 
-window.toggleMic = function(){
+window.toggleMic =
+function(){
 
 if(!stream)return;
 
@@ -2246,7 +2332,8 @@ track.enabled =
    CAMERA
 ===================================================== */
 
-window.toggleCamera = function(){
+window.toggleCamera =
+function(){
 
 if(!stream)return;
 
@@ -2269,7 +2356,8 @@ track.enabled =
    END CALL
 ===================================================== */
 
-window.endCall = async function(){
+window.endCall =
+async function(){
 
 if(callId){
 
@@ -2279,19 +2367,15 @@ await set(
 
 ref(
 db,
-"calls/"+callId+"/status"
+"calls/"+callId+
+"/status"
 ),
 
 "ended"
 
 );
 
-}
-catch(e){
-
-console.log(e);
-
-}
+}catch(e){}
 
 }
 
@@ -2311,11 +2395,11 @@ if(stream){
 
 stream
 .getTracks()
-.forEach(track => {
-
+.forEach(
+track=>{
 track.stop();
-
-});
+}
+);
 
 stream = null;
 
@@ -2333,27 +2417,35 @@ pc = null;
 
 document.getElementById(
 "localVideo"
-).srcObject = null;
+)
+.srcObject = null;
 
 
 document.getElementById(
 "remoteVideo"
-).srcObject = null;
+)
+.srcObject = null;
 
 
 document.getElementById(
 "call"
-).style.display = "none";
+)
+.style.display =
+"none";
 
 
 document.getElementById(
 "incoming"
-).style.display = "none";
+)
+.style.display =
+"none";
 
 
 document.getElementById(
 "activeCall"
-).style.display = "none";
+)
+.style.display =
+"none";
 
 
 incoming = null;
@@ -2368,9 +2460,6 @@ callId = null;
 ===================================================== */
 
 if(me){
-
-me =
-normalizePhone(me);
 
 openApp();
 
